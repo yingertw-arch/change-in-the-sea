@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>改變中的海 — 互動闖關</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root{
+    --deep:#0a3d62; --mid:#1e6091; --sea:#168aad; --aqua:#34c3eb;
+    --sand:#e9d8a6; --rock:#b08968; --coral:#ff7b54; --green:#52b788;
+    --ink:#0b2545; --card:#ffffff;
+  }
+  body{
+    font-family:"Microsoft JhengHei","PingFang TC","Noto Sans TC",sans-serif;
+    color:var(--ink);
+    background:linear-gradient(180deg,#9be7ff 0%,#34c3eb 35%,#168aad 70%,#0a3d62 100%);
+    min-height:100vh; overflow-x:hidden;
+  }
+  /* waves */
+  .waves{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:.25;}
+  .bubble{position:fixed;bottom:-40px;border-radius:50%;background:rgba(255,255,255,.4);
+    animation:rise linear infinite;pointer-events:none;z-index:0;}
+  @keyframes rise{to{transform:translateY(-110vh);opacity:0;}}
+
+  .wrap{position:relative;z-index:1;max-width:780px;margin:0 auto;padding:16px 14px 60px;}
+  header{text-align:center;color:#fff;padding:18px 10px 8px;}
+  header h1{font-size:30px;text-shadow:0 2px 8px rgba(0,0,0,.3);letter-spacing:1px;}
+  header p{font-size:15px;opacity:.95;margin-top:6px;}
+
+  .progress{display:flex;gap:6px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .dot{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.3);
+    display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;
+    border:2px solid rgba(255,255,255,.6);font-size:15px;transition:.3s;}
+  .dot.active{background:#fff;color:var(--mid);transform:scale(1.12);box-shadow:0 4px 12px rgba(0,0,0,.25);}
+  .dot.done{background:var(--green);border-color:#fff;}
+
+  .scorebar{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 2px;position:relative;}
+  #scoreBadge{background:rgba(255,255,255,.92);color:var(--ink);font-size:14px;font-weight:bold;
+    padding:6px 16px;border-radius:20px;box-shadow:0 3px 10px rgba(0,0,0,.2);}
+  #scoreBadge b{color:var(--coral);font-size:16px;}
+  .scoreflash{position:absolute;right:14px;top:-2px;font-weight:bold;font-size:18px;opacity:0;
+    transition:opacity .25s;pointer-events:none;}
+  .scoreflash.up{color:#caffbf;text-shadow:0 1px 4px rgba(0,0,0,.4);}
+  .scoreflash.down{color:#ffadad;text-shadow:0 1px 4px rgba(0,0,0,.4);}
+
+  .card{background:var(--card);border-radius:22px;padding:22px 20px;margin-top:8px;
+    box-shadow:0 12px 34px rgba(0,0,0,.25);animation:pop .4s ease;}
+  @keyframes pop{from{opacity:0;transform:translateY(20px) scale(.97);}to{opacity:1;}}
+  .card h2{font-size:22px;color:var(--mid);margin-bottom:4px;}
+  .card .sub{color:#5a6b7b;font-size:14px;margin-bottom:14px;line-height:1.6;}
+  .scene-tag{display:inline-block;background:var(--aqua);color:#fff;font-size:13px;
+    padding:3px 12px;border-radius:20px;margin-bottom:10px;font-weight:bold;}
+
+  .btn{display:inline-block;background:var(--coral);color:#fff;border:none;cursor:pointer;
+    font-size:17px;font-weight:bold;padding:13px 26px;border-radius:30px;margin-top:10px;
+    box-shadow:0 6px 0 #d85f3c;transition:.1s;font-family:inherit;}
+  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 #d85f3c;}
+  .btn.blue{background:var(--sea);box-shadow:0 6px 0 #0f5e7a;}
+  .btn.blue:active{box-shadow:0 2px 0 #0f5e7a;}
+  .btn.ghost{background:#eef3f6;color:var(--mid);box-shadow:0 6px 0 #cdd9e0;}
+  .btn.ghost:active{box-shadow:0 2px 0 #cdd9e0;}
+  .btn:disabled{background:#b9c4cc;box-shadow:0 6px 0 #95a3ab;cursor:not-allowed;transform:none;}
+  .center{text-align:center;}
+
+  /* ---- 抽抽樂雙塔 ---- */
+  .towers{display:flex;gap:14px;justify-content:center;margin:6px 0 4px;}
+  .tower{flex:1;max-width:300px;text-align:center;}
+  .tower.onecol{max-width:340px;margin:0 auto;}
+  .tower h3{font-size:16px;margin-bottom:8px;}
+  .stack{display:flex;flex-direction:column-reverse;align-items:center;gap:4px;
+    min-height:230px;justify-content:flex-end;}
+  .block{width:90%;height:26px;border-radius:6px;cursor:pointer;color:#fff;font-size:12px;
+    display:flex;align-items:center;justify-content:center;font-weight:bold;
+    transition:.25s;box-shadow:inset 0 -3px rgba(0,0,0,.18);}
+  .block:hover{filter:brightness(1.1);}
+  .block.rock{background:linear-gradient(#caa472,#a9774b);}
+  .block.ocean{background:linear-gradient(#3bc4e0,#1a86a8);}
+  .block.gone{height:0;opacity:0;margin:0;padding:0;pointer-events:none;}
+  .crown{font-size:34px;height:42px;transition:.3s;}
+  .neck{font-size:13px;color:#7a5c3a;}
+  .meter{font-size:13px;margin-top:8px;color:#33586e;min-height:20px;font-weight:bold;}
+  .twocol{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;font-size:13px;}
+  .twocol div{background:#f1f6f9;padding:8px;border-radius:10px;}
+
+  /* ---- 分類關 ---- */
+  .bins{display:flex;gap:10px;margin-top:14px;}
+  .bin{flex:1;border:3px dashed rgba(255,255,255,.0);border-radius:16px;padding:10px;min-height:120px;}
+  .bin.nat{background:#f3ead3;border-color:#cdb487;}
+  .bin.hum{background:#d6f0ec;border-color:#7fc9bd;}
+  .bin h4{text-align:center;font-size:15px;margin-bottom:8px;}
+  .cardq{background:#fff;border-radius:12px;padding:12px 14px;margin:10px 0;font-size:16px;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);}
+  .choose{display:flex;gap:10px;margin-top:10px;}
+  .choose button{flex:1;font-family:inherit;cursor:pointer;border:none;border-radius:12px;
+    padding:12px;font-size:15px;font-weight:bold;color:#fff;}
+  .choose .nb{background:var(--rock);}
+  .choose .hb{background:var(--sea);}
+  .fb{margin-top:10px;font-weight:bold;min-height:24px;font-size:15px;}
+  .fb.ok{color:var(--green);} .fb.no{color:var(--coral);}
+
+  /* ---- 循環關 ---- */
+  .cycle{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:14px 0;}
+  .pick{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:10px;}
+  .chip{background:#fff;border:2px solid var(--sea);color:var(--mid);border-radius:20px;
+    padding:10px 16px;font-size:15px;font-weight:bold;cursor:pointer;font-family:inherit;}
+  .chip:disabled{opacity:.35;cursor:default;}
+  .slot{background:#eaf6fb;border:2px dashed #9cc; border-radius:14px;padding:10px 14px;
+    font-size:15px;min-width:120px;text-align:center;font-weight:bold;color:var(--mid);}
+  .slot.filled{background:var(--green);color:#fff;border-style:solid;border-color:var(--green);}
+  .arrow{font-size:20px;color:#fff;align-self:center;}
+
+  /* 地景連連看 */
+  .match{display:flex;gap:10px;margin-top:14px;}
+  .mcol{flex:1;display:flex;flex-direction:column;gap:8px;}
+  .lfbtn{font-family:inherit;cursor:pointer;border:2px solid #cdd9e0;background:#fff;color:var(--ink);
+    border-radius:12px;padding:12px 10px;font-size:14px;font-weight:bold;line-height:1.4;transition:.15s;text-align:left;}
+  .mleft .lfbtn,#mleft .lfbtn{text-align:center;font-size:16px;}
+  .lfbtn:hover:not(.right){border-color:var(--sea);}
+  .lfbtn.sel{border-color:var(--coral);background:#fff1ec;}
+  .lfbtn.right{background:var(--green);color:#fff;border-color:var(--green);cursor:default;}
+  .lfbtn.shake{animation:shake .4s;}
+  @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+
+  /* 珊瑚白化 */
+  .coralbox{text-align:center;background:linear-gradient(180deg,#cdeffd,#7fd4f0);border-radius:16px;
+    padding:18px;margin:8px 0;}
+  .coral{font-size:78px;transition:filter .4s;line-height:1.1;}
+  .coralstat{font-size:15px;font-weight:bold;color:#1a5870;margin-top:6px;min-height:22px;}
+  .tempslider{width:100%;margin-top:14px;accent-color:var(--coral);height:8px;}
+  .templabel{display:flex;justify-content:space-between;font-size:13px;color:#5a6b7b;margin-top:6px;}
+  .tempnow{font-weight:bold;color:var(--coral);font-size:16px;}
+
+  /* ---- 宣言關 ---- */
+  .check{display:flex;align-items:center;gap:10px;background:#f1f6f9;border-radius:12px;
+    padding:12px;margin:8px 0;cursor:pointer;font-size:15px;}
+  .check input{width:22px;height:22px;accent-color:var(--green);}
+  textarea{width:100%;border:2px solid #cdd9e0;border-radius:12px;padding:12px;font-size:16px;
+    font-family:inherit;margin-top:8px;resize:vertical;min-height:70px;}
+  .pledge{background:linear-gradient(135deg,#168aad,#0a3d62);color:#fff;border-radius:18px;
+    padding:22px;margin-top:14px;text-align:center;box-shadow:0 10px 26px rgba(0,0,0,.3);}
+  .pledge h3{font-size:18px;margin-bottom:10px;}
+  .pledge .big{font-size:19px;line-height:1.7;margin:10px 0;}
+  .star{font-size:40px;}
+
+  .scorecard{background:linear-gradient(135deg,#168aad,#0a3d62);color:#fff;border-radius:16px;
+    padding:16px;margin:6px 0 14px;box-shadow:0 8px 22px rgba(0,0,0,.25);}
+  .bignum{font-size:46px;font-weight:bold;line-height:1.1;}
+  .bignum span{font-size:20px;font-weight:normal;}
+  .qa{font-size:15px;margin-top:4px;font-weight:bold;color:#dff3fb;}
+  .note2{font-size:14px;margin-top:8px;color:#ffe7a8;}
+  .final{text-align:center;color:#fff;padding:30px 10px;}
+  .badge{font-size:90px;animation:spin 3s linear infinite;display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  .hide{display:none;}
+  .note{font-size:12px;color:#7a8a96;margin-top:14px;text-align:center;}
+
+  /* 看影片站 */
+  .vplayer{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;
+    background:linear-gradient(135deg,#9be7ff,#168aad);height:170px;display:flex;
+    flex-direction:column;align-items:center;justify-content:center;margin:6px 0 12px;
+    box-shadow:0 8px 22px rgba(0,0,0,.2);transition:.2s;}
+  .vplayer:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.28);}
+  .vthumb{font-size:54px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));}
+  .vplay{position:absolute;width:62px;height:62px;border-radius:50%;background:rgba(255,123,84,.95);
+    color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 6px 16px rgba(0,0,0,.35);padding-left:5px;}
+  .vmeta{position:absolute;bottom:0;left:0;width:100%;background:rgba(10,61,98,.82);color:#fff;
+    font-size:13px;padding:8px 10px;text-align:center;line-height:1.5;}
+  .missions{background:#fff6ee;border:2px solid #ffd9c5;border-radius:14px;padding:14px;
+    margin-top:14px;font-size:15px;line-height:1.5;}
+  .missions div{margin-top:8px;color:#33586e;}
+  .vlabel{font-weight:bold;color:var(--mid);font-size:15px;margin:14px 0 6px;}
+  .quizwrap{background:#eef7fb;border:2px solid #b9def0;border-radius:14px;padding:14px;margin-top:14px;}
+  .vq{margin-top:12px;}
+  .vqq{font-size:15px;font-weight:bold;color:var(--ink);margin-bottom:8px;line-height:1.5;}
+  .vqopts{display:flex;flex-wrap:wrap;gap:8px;}
+  .vqopt{flex:1 1 45%;min-width:120px;font-family:inherit;cursor:pointer;border:2px solid #cdd9e0;
+    background:#fff;color:var(--ink);border-radius:12px;padding:11px 8px;font-size:15px;font-weight:bold;transition:.15s;}
+  .vqopt:hover:not(:disabled){border-color:var(--sea);}
+  .vqopt:disabled{cursor:default;opacity:.7;}
+  .vqopt.right{background:var(--green);color:#fff;border-color:var(--green);opacity:1;}
+  .vqopt.wrong{background:#ffe0d6;border-color:var(--coral);color:var(--coral);}
+</style>
+</head>
+<body>
+<div class="waves"></div>
+<div class="wrap">
+  <header>
+    <h1>🌊 改變中的海</h1>
+    <p>大自然的雕刻 × 人類的足跡 — 互動闖關</p>
+  </header>
+
+  <div class="progress" id="progress"></div>
+  <div class="scorebar"><span id="scoreBadge">⭐ 分數 <b>0</b> ｜ ✅ 0 ｜ ❌ 0</span><span id="scoreFlash" class="scoreflash"></span></div>
+  <div id="stage"></div>
+  <div class="note">海山國小 · 永續發展教案 · 連結「野柳女王頭」與「浮潛海洋生態」</div>
+</div>
+
+<script>
+/* ============ 關卡資料 ============ */
+const sortCards = [
+  {t:"野柳女王頭的脖子被海風海浪磨得越來越細", a:"nat"},
+  {t:"海裡的珊瑚因為海水變熱而白化死亡", a:"hum"},
+  {t:"蕈狀岩經過兩千萬年慢慢被侵蝕成形", a:"nat"},
+  {t:"寶特瓶和塑膠袋漂在海面上，海龜誤食", a:"hum"},
+  {t:"豆腐岩沿著天然裂縫被海水切割成方塊", a:"nat"},
+  {t:"漁船過度捕撈，海裡的魚越來越少", a:"hum"},
+  {t:"寄居蟹找不到貝殼，只好拿塑膠垃圾當家", a:"hum"},
+  {t:"海浪帶著小石頭在岩石上打轉，磨出一個個壺穴", a:"nat"},
+];
+const cycleAnswer = ["🐠 海裡的生命","⬇️ 死亡後沉到海底","🪨 沉積變成岩石","🌊 被海水侵蝕風化","🐠 養分回到海洋"];
+const cyclePool   = ["🪨 沉積變成岩石","🐠 海裡的生命","🌊 被海水侵蝕風化","🐠 養分回到海洋","⬇️ 死亡後沉到海底"];
+
+let state = {step:0, points:0, correct:0, wrong:0, sortIdx:0, cycleNext:0};
+const STEPS = 7;
+const PT_OK=10, PT_NO=5;
+const PAIR_COLORS=["#2d8a5f","#1e6091","#e07a3c","#7b4fb5"];
+function gain(){ state.points+=PT_OK; state.correct++; flashScore('+'+PT_OK,true); updateScore(); }
+function lose(){ state.points-=PT_NO; state.wrong++; flashScore('-'+PT_NO,false); updateScore(); }
+function updateScore(){ const e=document.getElementById('scoreBadge'); if(e) e.innerHTML='⭐ 分數 <b>'+state.points+'</b> ｜ ✅ '+state.correct+' ｜ ❌ '+state.wrong; }
+function flashScore(t,ok){ const e=document.getElementById('scoreFlash'); if(!e)return; e.textContent=t; e.className='scoreflash '+(ok?'up':'down'); e.style.opacity='1'; setTimeout(()=>{e.style.opacity='0';},700); }
+
+/* ============ 進度列 ============ */
+function renderProgress(){
+  const p = document.getElementById('progress');
+  p.innerHTML='';
+  for(let i=0;i<STEPS;i++){
+    const d=document.createElement('div');
+    d.className='dot'+(i===state.step?' active':'')+(i<state.step?' done':'');
+    d.textContent = i<state.step?'✓':(i+1);
+    p.appendChild(d);
+  }
+}
+
+/* ============ 關卡渲染 ============ */
+const stage = ()=>document.getElementById('stage');
+
+function show(html){ stage().innerHTML = `<div class="card">${html}</div>`; }
+
+/* ---- 開場 ---- */
+function intro(){
+  show(`
+    <span class="scene-tag">出發前</span>
+    <h2>歡迎，海洋偵探！🕵️</h2>
+    <p class="sub">我們去過<b>野柳</b>看女王頭，也下海<b>浮潛</b>看海洋生物。<br>
+    這兩件事看起來不一樣，但其實都和「<b>海，正在改變</b>」有關。<br>
+    先看一段影片蒐集線索，再闖過 4 個關卡，找出它們的祕密連結吧！</p>
+    <div class="center"><button class="btn" onclick="videoStation(1)">先看影片 →</button></div>
+  `);
+}
+
+/* ---- 看影片站（影片→闖關→影片→闖關）---- */
+const VIDEOS = {
+  1:{ seg:'海洋篇', name:'海灘偵察記', emoji:'🐠', id:'335299', thumb:'🏖️🌊',
+      title:'《海灘偵察記》· 國家教育研究院 · 2019',
+      desc:'海洋廢棄物 · 洋流 · 塑膠微粒 · 食物鏈',
+      lead:'先看<b>海洋</b>面臨什麼危機，再去闖「海洋篇」的關卡！',
+      mission:'海洋生物遇到什麼困難？垃圾被什麼帶來？塑膠微粒去了哪？',
+      next:0,
+      quiz:[
+        {q:"寄居蟹因為找不到貝殼，只好拿什麼當成自己的家？",opts:["珊瑚","塑膠垃圾／瓶蓋","海草","小石頭"],a:1},
+        {q:"海灘上的垃圾，主要是被什麼帶到世界各地的海邊？",opts:["風","洋流","海鳥","捕魚船"],a:1},
+        {q:"小到肉眼幾乎看不見、會進入食物鏈的塑膠碎片叫做？",opts:["塑膠微粒","塑膠袋","泡泡","沙子"],a:0},
+      ]},
+  2:{ seg:'野柳篇', name:'岩石的風化作用', emoji:'🪨', id:'297977', thumb:'⛰️🗿',
+      title:'《岩石的風化作用》· 臺中市教育局',
+      desc:'風化作用 · 女王頭 · 土壤的由來',
+      lead:'海洋篇完成！換看<b>野柳</b>：岩石怎麼變成女王頭，再闖「野柳篇」。',
+      mission:'什麼是「風化作用」？野柳女王頭是怎麼形成的？',
+      next:2,
+      quiz:[
+        {q:"岩石經過長期風吹、日晒、雨淋，慢慢破碎或變色，這叫做什麼作用？",opts:["風化作用","光合作用","結冰作用","發酵作用"],a:0},
+        {q:"野柳的女王頭，是被下面哪一種力量慢慢雕刻出來的？",opts:["人們用工具雕刻","風化與海水侵蝕","地震一次震成","火山爆發堆成"],a:1},
+      ]},
+};
+let vidDone={};
+function videoStation(part){
+  const V=VIDEOS[part]; vidDone[part]=new Set(); state.step=V.next; renderProgress();
+  let quizHtml='';
+  V.quiz.forEach((q,qi)=>{
+    let opts='';
+    q.opts.forEach((o,oi)=>{ opts+=`<button class="vqopt" id="vq${qi}o${oi}" onclick="answerVid(${part},${qi},${oi})">${o}</button>`; });
+    quizHtml+=`<div class="vq"><div class="vqq">${qi+1}. ${q.q}</div><div class="vqopts">${opts}</div><div class="fb" id="vqfb${qi}"></div></div>`;
+  });
+  show(`
+    <span class="scene-tag">📺 看影片 · ${V.seg}</span>
+    <h2>${V.emoji} ${V.name}</h2>
+    <p class="sub">${V.lead}</p>
+    <div class="vplayer" onclick="openVideo('${V.id}')">
+      <div class="vthumb">${V.thumb}</div>
+      <div class="vplay">▶</div>
+      <div class="vmeta">${V.title}<br><small>${V.desc}</small></div>
+    </div>
+    <div class="center"><button class="btn blue" onclick="openVideo('${V.id}')">▶️ 前往愛學網觀看</button></div>
+    <div class="missions"><b>🕵️ 看片任務（等一下要考）：</b><div>${V.emoji} ${V.mission}</div></div>
+    <div class="quizwrap">
+      <b>🔍 看片驗證</b>
+      <p class="sub" id="quizHint" style="margin-top:4px">答案都藏在影片裡 —— 答對全部才能解鎖闖關！</p>
+      ${quizHtml}
+    </div>
+    <div class="center hide" id="startBtn"><button class="btn" onclick="goto(${V.next})">開始闖關 →</button></div>
+    <p class="note" style="margin-top:6px">影片會在新分頁開啟（愛學網不允許內嵌）。看完回到這頁作答即可。</p>
+  `);
+}
+function answerVid(part,qi,oi){
+  const V=VIDEOS[part]; const q=V.quiz[qi]; const fb=document.getElementById('vqfb'+qi);
+  if(vidDone[part].has(qi))return;
+  const chosen=document.getElementById('vq'+qi+'o'+oi);
+  if(oi===q.a){
+    vidDone[part].add(qi); chosen.classList.add('right'); gain();
+    q.opts.forEach((o,i)=>{ document.getElementById('vq'+qi+'o'+i).disabled=true; });
+    fb.className='fb ok'; fb.textContent='✅ 答對了！(+10)';
+  } else { chosen.classList.add('wrong'); chosen.disabled=true; lose(); fb.className='fb no'; fb.textContent='❌ 再看一次影片找找看～ (-5)'; }
+  if(vidDone[part].size===V.quiz.length){
+    document.getElementById('startBtn').classList.remove('hide');
+    document.getElementById('quizHint').innerHTML='🎉 <b>看片驗證全對！</b>可以開始闖關了。';
+  }
+}
+function openVideo(id){ window.open('https://stv.naer.edu.tw/watch/'+(id||'335299'),'_blank','noopener'); }
+
+/* ---- 關卡1：海洋抽抽樂（海洋篇）---- */
+function lvlOceanTower(){
+  state.ocean=6;
+  const oTxt=['寄居蟹住塑膠','海龜誤食垃圾','洋流送垃圾','塑膠微粒','海鳥吞塑膠','漁網纏住魚'];
+  let blocks='';
+  for(let i=0;i<6;i++){ blocks+=`<div class="block ocean" id="o${i}" onclick="pullOcean(${i})">${oTxt[i]}</div>`; }
+  show(`
+    <span class="scene-tag">關卡 1 / 7 · 海洋篇</span>
+    <h2>🎲 海洋抽抽樂</h2>
+    <p class="sub">影片裡海洋遇到好多麻煩。點積木把它「抽掉」，看看<b>人類的破壞</b>讓海洋多快崩潰！</p>
+    <div class="towers"><div class="tower onecol">
+      <h3>🐠 浮潛的海洋</h3>
+      <div class="crown" id="reef">🐠🐠🐠</div>
+      <div class="neck" id="reefn">生機勃勃</div>
+      <div class="stack">${blocks}</div>
+      <div class="meter" id="ometer">人為破壞中…</div>
+    </div></div>
+    <div id="otResult"></div>
+  `);
+}
+function pullOcean(i){
+  const b=document.getElementById('o'+i); if(b.classList.contains('gone'))return;
+  b.classList.add('gone'); state.ocean--;
+  const reef=document.getElementById('reef'); const rn=document.getElementById('reefn'); const left=state.ocean;
+  reef.textContent='🐠'.repeat(Math.max(left-2,0))||'🌫️';
+  const states=['生機勃勃','寄居蟹找不到貝殼','海龜被垃圾纏住','珊瑚變白、生物逃走','只剩塑膠微粒漂浮','一片死寂'];
+  rn.textContent='短短幾十年… '+states[Math.min(6-left,5)];
+  document.getElementById('ometer').textContent=`已破壞 ${6-left} 層（超快，數十年）`;
+  if(state.ocean<=0){
+    reef.textContent='🌫️'; rn.textContent='生態系崩潰…';
+    document.getElementById('otResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 海洋的崩壞是<b>人類</b>造成的，速度<b>超快</b>（幾十年）—— 但好消息：<b>我們可以阻止它！</b></p><div class="center"><button class="btn blue" onclick="goto(1)">下一關 →</button></div>`;
+  }
+}
+
+/* ---- 關卡3：野柳抽抽樂（野柳篇）---- */
+function lvlRockTower(){
+  state.rock=6;
+  let blocks='';
+  for(let i=0;i<6;i++){ blocks+=`<div class="block rock" id="r${i}" onclick="pullRock(${i})">岩層</div>`; }
+  show(`
+    <span class="scene-tag">關卡 3 / 7 · 野柳篇</span>
+    <h2>🎲 野柳抽抽樂</h2>
+    <p class="sub">影片說女王頭是<b>風化作用</b>慢慢雕出來的。點積木代表岩石被一點點風化，看看女王頭會怎樣！</p>
+    <div class="towers"><div class="tower onecol">
+      <h3>🪨 野柳女王頭</h3>
+      <div class="crown" id="crown">👸</div>
+      <div class="neck" id="neck">脖子粗粗的</div>
+      <div class="stack">${blocks}</div>
+      <div class="meter" id="rmeter">自然風化中…</div>
+    </div></div>
+    <div id="rtResult"></div>
+  `);
+}
+function pullRock(i){
+  const b=document.getElementById('r'+i); if(b.classList.contains('gone'))return;
+  b.classList.add('gone'); state.rock--;
+  const crown=document.getElementById('crown'); const neck=document.getElementById('neck'); const m=6-state.rock;
+  const necks=['脖子粗粗的','慢慢變細…','更細了…','好細好細…','快撐不住…','搖搖欲墜…'];
+  neck.textContent='經過數百萬年… '+(necks[Math.min(m,5)]);
+  crown.style.transform=`scaleX(${1-m*0.12})`;
+  document.getElementById('rmeter').textContent=`已風化 ${m} 層（極慢，千萬年）`;
+  if(state.rock<=0){
+    crown.textContent='💔'; neck.textContent='女王頭斷了…';
+    document.getElementById('rtResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 女王頭的改變是<b>大自然</b>造成的，速度<b>極慢</b>（千萬年），而且<b>無法挽回</b>—— 我們只能珍惜與記錄。</p><div class="center"><button class="btn blue" onclick="goto(3)">下一關 →</button></div>`;
+  }
+}
+
+/* ---- 關卡2：分類 ---- */
+function lvl2(){
+  state.sortIdx=0;
+  renderSort();
+}
+function renderSort(){
+  if(state.sortIdx>=sortCards.length){
+    show(`<span class="scene-tag">關卡 5 / 7 · 統整</span>
+      <h2>🎯 分類高手！</h2>
+      <p class="sub">看完兩支影片、玩過兩座塔，你已經能分辨：<br>🪨 <b>自然的改變</b>＝慢、不可逆，我們珍惜它<br>🐠 <b>人為的改變</b>＝快、可逆，我們<b>能改變它</b>！</p>
+      <div class="center"><button class="btn blue" onclick="goto(5)">下一關 →</button></div>`);
+    return;
+  }
+  const c=sortCards[state.sortIdx];
+  show(`
+    <span class="scene-tag">關卡 5 / 7 · 統整 · 第 ${state.sortIdx+1}/${sortCards.length} 題</span>
+    <h2>🗂️ 這是哪一種改變？</h2>
+    <p class="sub">讀一讀，判斷它是「自然的改變」還是「人為的改變」。</p>
+    <div class="cardq">${c.t}</div>
+    <div class="choose">
+      <button class="nb" onclick="answerSort('nat')">🪨 自然的改變<br><small>慢 · 不可逆</small></button>
+      <button class="hb" onclick="answerSort('hum')">🐠 人為的改變<br><small>快 · 可阻止</small></button>
+    </div>
+    <div class="fb" id="sfb"></div>
+  `);
+}
+function answerSort(a){
+  const c=sortCards[state.sortIdx]; const fb=document.getElementById('sfb');
+  if(a===c.a){
+    gain(); fb.className='fb ok'; fb.textContent='✅ 答對了！(+10)';
+    setTimeout(()=>{ state.sortIdx++; renderSort(); }, 800);
+  } else {
+    lose(); fb.className='fb no';
+    fb.textContent=(c.a==='nat'?'❌ 這是大自然慢慢造成的，扣 5 分，再選一次！':'❌ 這是人類造成的破壞，扣 5 分，再選一次！');
+  }
+}
+
+/* ---- 關卡3：地景連連看 ---- */
+const landforms=[
+  {name:"👑 女王頭", cause:"砂岩被風化和海水侵蝕，脖子越變越細"},
+  {name:"🧈 豆腐岩", cause:"沿著岩石的天然裂縫，被切割成一塊塊方格"},
+  {name:"🕯️ 燭台石", cause:"中間有顆硬球，周圍被海水侵蝕成燭台形狀"},
+  {name:"🕳️ 壺穴", cause:"海浪夾帶小石頭打轉，在岩石上磨出圓洞"},
+];
+let lfSel=null, lfMatched=0;
+function lvlLandform(){
+  lfSel=null; lfMatched=0;
+  const order=[0,1,2,3].sort(()=>Math.random()-0.5);
+  let left='', right='';
+  landforms.forEach((l,i)=>{ left+=`<button class="lfbtn" id="lf${i}" onclick="selLeft(${i})">${l.name}</button>`; });
+  order.forEach(oi=>{ right+=`<button class="lfbtn cz" id="cz${oi}" onclick="selRight(${oi})">${landforms[oi].cause}</button>`; });
+  show(`
+    <span class="scene-tag">關卡 4 / 7 · 野柳篇</span>
+    <h2>🔗 野柳地景連連看</h2>
+    <p class="sub">這些都是野柳的奇岩！先點左邊的<b>地景</b>，再點右邊它的<b>形成原因</b>，配對成功就會變綠。</p>
+    <div class="match">
+      <div class="mcol" id="mleft">${left}</div>
+      <div class="mcol" id="mright">${right}</div>
+    </div>
+    <div class="fb" id="lffb"></div>
+  `);
+}
+function selLeft(i){
+  if(document.getElementById('lf'+i).classList.contains('right'))return;
+  lfSel=i;
+  document.querySelectorAll('#mleft .lfbtn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('lf'+i).classList.add('sel');
+}
+function selRight(oi){
+  const fb=document.getElementById('lffb'); const cz=document.getElementById('cz'+oi);
+  if(cz.classList.contains('right'))return;
+  if(lfSel===null){ fb.className='fb no'; fb.textContent='👈 先點左邊的地景，再點原因喔！'; return; }
+  if(oi===lfSel){
+    const col=PAIR_COLORS[lfMatched % PAIR_COLORS.length];
+    const lb=document.getElementById('lf'+lfSel);
+    [lb,cz].forEach(el=>{ el.classList.add('right'); el.classList.remove('sel'); el.style.background=col; el.style.borderColor=col; el.style.color='#fff'; });
+    lfMatched++; lfSel=null; gain();
+    fb.className='fb ok'; fb.textContent='✅ 配對成功！(+10)';
+    if(lfMatched===landforms.length){
+      fb.innerHTML='🎉 全部配對完成！這些奇岩都是<b>風化與海水侵蝕</b>慢慢雕出來的。<div class="center"><button class="btn blue" onclick="goto(4)">下一關 →</button></div>';
+    }
+  } else {
+    cz.classList.add('shake'); setTimeout(()=>cz.classList.remove('shake'),400);
+    lose(); fb.className='fb no'; fb.textContent='❌ 不是這個原因，扣 5 分，再想想～';
+  }
+}
+
+/* ---- 關卡4：珊瑚白化實驗 ---- */
+function lvlCoral(){
+  show(`
+    <span class="scene-tag">關卡 2 / 7 · 海洋篇</span>
+    <h2>🌡️ 珊瑚白化實驗室</h2>
+    <p class="sub">浮潛時看到的美麗珊瑚，最怕海水變熱。<br>拖動下面的溫度計，看看海水升溫時珊瑚會發生什麼事！</p>
+    <div class="coralbox">
+      <div class="coral" id="coralFace">🪸</div>
+      <div class="coralstat" id="coralStat">健康的珊瑚，住著好多小魚 🐠🐠🐠</div>
+    </div>
+    <input type="range" min="26" max="32" step="1" value="26" id="tempR" class="tempslider" oninput="updCoral(this.value)">
+    <div class="templabel"><span>26°C 涼爽</span><span id="tempNow" class="tempnow">26°C</span><span>32°C 過熱</span></div>
+    <div id="coralQ" class="hide">
+      <p class="sub" style="margin-top:16px"><b>🔬 小科學家，下結論：</b>珊瑚為什麼會白化死亡？</p>
+      <div class="choose">
+        <button class="nb" onclick="coralAns(false)">海水變乾淨了</button>
+        <button class="hb" onclick="coralAns(true)">海水溫度上升（暖化）</button>
+      </div>
+      <div class="fb" id="coralFb"></div>
+    </div>
+  `);
+}
+function updCoral(v){
+  v=+v; document.getElementById('tempNow').textContent=v+'°C';
+  const f=document.getElementById('coralFace'), s=document.getElementById('coralStat');
+  if(v<=27){ f.style.filter='none'; s.textContent='健康的珊瑚，住著好多小魚 🐠🐠🐠'; }
+  else if(v<=29){ f.style.filter='saturate(.4) brightness(1.2)'; s.textContent='珊瑚有點不舒服，顏色開始變淡… 🐠'; }
+  else { f.style.filter='grayscale(1) brightness(1.7)'; s.textContent='💀 珊瑚白化了！小魚全都游走了…'; document.getElementById('coralQ').classList.remove('hide'); }
+}
+function coralAns(correct){
+  const fb=document.getElementById('coralFb');
+  if(correct){
+    gain();
+    document.querySelectorAll('#coralQ .choose button').forEach(b=>b.disabled=true);
+    fb.className='fb ok';
+    fb.innerHTML='✅ 沒錯！(+10)<b>海水溫度上升</b>會讓珊瑚把體內的共生藻趕走而變白、死亡。這是<b>氣候變遷</b>造成的——但也是我們<b>可以努力減碳去阻止</b>的改變！<div class="center"><button class="btn blue" onclick="videoStation(2)">看下一支影片 →</button></div>';
+  } else { lose(); fb.className='fb no'; fb.textContent='❌ 扣 5 分！再想想，剛剛溫度計往上拉時發生了什麼事？'; }
+}
+
+/* ---- 關卡5：循環 ---- */
+function lvl3(){
+  state.cycleNext=0;
+  let slots='', chips='';
+  for(let i=0;i<cycleAnswer.length;i++){
+    slots+=`<div class="slot" id="slot${i}">?</div>`+(i<cycleAnswer.length-1?'<span class="arrow">➡️</span>':'<span class="arrow">🔁</span>');
+  }
+  cyclePool.forEach((c,i)=>{ chips+=`<button class="chip" id="chip${i}" onclick="pickCycle(${i})">${c}</button>`; });
+  show(`
+    <span class="scene-tag">關卡 6 / 7 · 統整</span>
+    <h2>🔄 海與岩的循環</h2>
+    <p class="sub">原來野柳的岩石裡找得到海洋化石！<br>依正確順序點選卡片，排出「海 → 岩 → 海」的循環。</p>
+    <div class="cycle">${slots}</div>
+    <div class="pick">${chips}</div>
+    <div class="fb" id="cfb"></div>
+  `);
+}
+function pickCycle(i){
+  const want=cycleAnswer[state.cycleNext];
+  const chip=document.getElementById('chip'+i);
+  if(cyclePool[i]===want){
+    const slot=document.getElementById('slot'+state.cycleNext);
+    slot.textContent=want; slot.classList.add('filled');
+    chip.disabled=true; state.cycleNext++; gain();
+    const fb=document.getElementById('cfb'); fb.className='fb ok'; fb.textContent='✅ 順序正確！(+10)';
+    if(state.cycleNext>=cycleAnswer.length){
+      fb.innerHTML='🎉 完成循環！<br><span class="sub">原來海和陸、生命和岩石，是同一個地球在循環。今天浮潛看到的珊瑚，幾百萬年後也可能變成像野柳那樣的岩石！</span><div class="center"><button class="btn blue" onclick="goto(6)">最後一關 →</button></div>';
+    }
+  } else {
+    lose();
+    const fb=document.getElementById('cfb'); fb.className='fb no'; fb.textContent='❌ 順序不對，扣 5 分！這一步應該接「'+want.replace(/[🐠🪨🌊⬇️ ]/g,'')+'」';
+  }
+}
+
+/* ---- 關卡4：永續宣言 ---- */
+function lvl4(){
+  const acts=["🛒 買東西自備購物袋、不買過度包裝","🥤 自備水壺，少用一次性塑膠","🗑️ 看到海邊垃圾主動撿起、做好分類","🐟 認識永續海鮮，吃對魚","📣 把今天學到的告訴家人朋友"];
+  let list='';
+  acts.forEach((a,i)=>{ list+=`<label class="check"><input type="checkbox" onchange="updPledge()" id="act${i}"><span>${a}</span></label>`; });
+  show(`
+    <span class="scene-tag">關卡 7 / 7 · 統整</span>
+    <h2>🌱 我是改變的力量</h2>
+    <p class="sub">有些改變我們只能珍惜（女王頭終會風化）；<br>有些改變我們<b>可以阻止</b>（海洋污染與暖化）。<br>勾選你做得到的行動，寫下你的永續宣言！</p>
+    ${list}
+    <textarea id="vow" placeholder="✍️ 寫下我的永續宣言：我承諾……" oninput="updPledge()"></textarea>
+    <div id="pledgeBox"></div>
+    <div class="center">
+      <button class="btn" id="finishBtn" disabled onclick="finish()">完成闖關 🏅</button>
+      <div class="fb" id="vowHint" style="font-size:14px;color:#c0612e">✍️ 先勾一個行動、並寫下你的永續宣言，才能完成闖關喔！</div>
+    </div>
+  `);
+}
+function updPledge(){
+  let n=0; for(let i=0;i<5;i++){ if(document.getElementById('act'+i)?.checked) n++; }
+  const vow=document.getElementById('vow').value.trim();
+  const box=document.getElementById('pledgeBox');
+  if(n>0||vow){
+    box.innerHTML=`<div class="pledge"><div class="star">⭐</div><h3>我的永續宣言卡</h3>
+      <div class="big">我選擇了 <b>${n}</b> 個護海行動${vow?'<br>「'+vow+'」':''}</div>
+      <div class="sub" style="color:#cdeefb">分辨能改變的，並為它行動 — 這就是永續！</div></div>`;
+  } else box.innerHTML='';
+  // 強迫輸入：要勾至少一個行動 且 寫下宣言，才能完成闖關
+  const btn=document.getElementById('finishBtn'); const hint=document.getElementById('vowHint');
+  if(btn){
+    const ok = (n>0 && vow.length>0);
+    btn.disabled = !ok;
+    if(hint) hint.classList.toggle('hide', ok);
+  }
+}
+
+/* ---- 結束 ---- */
+function finish(){
+  state.points+=10; updateScore();   // 完成永續宣言獎勵 +10
+  renderProgress();
+  document.querySelectorAll('#progress .dot').forEach(d=>d.classList.add('done'));
+  const pts=state.points;
+  let badge,title,note;
+  if(pts>=210){ badge='🏆'; title='海洋守護者大師！'; note='幾乎全對，你超級專心，太厲害了！'; }
+  else if(pts>=160){ badge='🥇'; title='海洋守護者高手！'; note='表現很棒，再挑戰看看能不能拿大師！'; }
+  else if(pts>=110){ badge='🥈'; title='見習海洋守護者'; note='不錯喔！再玩一次，挑戰更高分。'; }
+  else { badge='🌱'; title='努力中的小海星'; note='別灰心，再看一次影片就會更厲害！'; }
+  stage().innerHTML=`<div class="card final" style="color:var(--ink)">
+    <div class="badge">${badge}</div>
+    <h2 style="color:var(--mid)">${title}</h2>
+    <div class="scorecard">
+      <div class="bignum">${pts}<span> 分</span></div>
+      <div class="qa">✅ 答對 ${state.correct} 題　｜　❌ 答錯 ${state.wrong} 題</div>
+      <div class="note2">${note}</div>
+    </div>
+    <p class="sub">你學會了 ——<br>
+    🪨 大自然的改變：慢、不可逆，我們珍惜<br>
+    🐠 人類的改變：快、可逆，我們<b>能行動</b><br>
+    🔄 海與岩是同一個地球的循環<br>
+    🌱 永續，就是分辨清楚並付出行動</p>
+    <div class="center">
+      <button class="btn" onclick="window.print()">🖨️ 列印 / 存成 PDF</button>
+      <button class="btn ghost" onclick="goto(-1)">🔁 再玩一次</button>
+    </div>
+  </div>`;
+}
+
+/* ============ 流程控制 ============ */
+function goto(step){
+  if(step===-1){ state={step:0,points:0,correct:0,wrong:0,sortIdx:0,cycleNext:0}; renderProgress(); updateScore(); intro(); window.scrollTo({top:0,behavior:'smooth'}); return; }
+  state.step=step; renderProgress();
+  [lvlOceanTower,lvlCoral,lvlRockTower,lvlLandform,lvl2,lvl3,lvl4][step]();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* 泡泡背景 */
+function makeBubbles(){
+  for(let i=0;i<14;i++){
+    const b=document.createElement('div'); b.className='bubble';
+    const s=6+Math.random()*22; b.style.width=s+'px'; b.style.height=s+'px';
+    b.style.left=Math.random()*100+'vw'; b.style.animationDuration=(8+Math.random()*10)+'s';
+    b.style.animationDelay=(Math.random()*8)+'s'; document.body.appendChild(b);
+  }
+}
+
+/* init */
+renderProgress(); updateScore(); intro(); makeBubbles();
+</script>
+</body>
+</html>
