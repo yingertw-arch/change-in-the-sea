@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>改變中的海 — 互動闖關 v2</title>
+<title>改變中的海 — 互動闖關</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root{
@@ -25,10 +25,10 @@
   header{text-align:center;color:#fff;padding:18px 10px 8px;}
   header h1{font-size:30px;text-shadow:0 2px 8px rgba(0,0,0,.3);letter-spacing:1px;}
   header p{font-size:15px;opacity:.95;margin-top:6px;}
-  .progress{display:flex;gap:6px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
-  .dot{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.3);
+  .progress{display:flex;gap:5px;justify-content:center;margin:14px 0;flex-wrap:wrap;}
+  .dot{width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.3);
     display:flex;align-items:center;justify-content:center;font-weight:bold;color:#fff;
-    border:2px solid rgba(255,255,255,.6);font-size:15px;transition:.3s;}
+    border:2px solid rgba(255,255,255,.6);font-size:13px;transition:.3s;}
   .dot.active{background:#fff;color:var(--mid);transform:scale(1.12);box-shadow:0 4px 12px rgba(0,0,0,.25);}
   .dot.done{background:var(--green);border-color:#fff;}
   .scorebar{display:flex;align-items:center;justify-content:center;gap:10px;margin:4px 0 2px;position:relative;}
@@ -56,63 +56,19 @@
   .btn.ghost:active{box-shadow:0 2px 0 #cdd9e0;}
   .btn:disabled{background:#b9c4cc;box-shadow:0 6px 0 #95a3ab;cursor:not-allowed;transform:none;}
   .center{text-align:center;}
-  .login-box{background:#fff;border-radius:24px;padding:30px 24px;max-width:400px;margin:20px auto;
-    box-shadow:0 16px 40px rgba(0,0,0,.28);}
-  .login-box .logo{font-size:60px;text-align:center;margin-bottom:10px;animation:bob 3s ease-in-out infinite;display:block;}
-  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
-  .login-box h2{text-align:center;color:var(--mid);font-size:22px;margin-bottom:18px;}
-  .login-field{margin-bottom:14px;}
-  .login-field label{font-size:14px;font-weight:bold;color:var(--ink);display:block;margin-bottom:5px;}
-  .login-field input,.login-field select{width:100%;border:2px solid #cdd9e0;border-radius:12px;
-    padding:10px 14px;font-size:17px;font-family:inherit;outline:none;transition:.2s;}
-  .login-field input:focus,.login-field select:focus{border-color:var(--sea);}
+  .login-box{max-width:380px;margin:20px auto;text-align:center;}
+  .login-box .logo{font-size:60px;display:block;margin-bottom:10px;}
+  .login-box h2{font-size:22px;color:var(--mid);margin-bottom:16px;}
+  .login-field{text-align:left;margin-bottom:12px;}
+  .login-field label{display:block;font-size:14px;font-weight:bold;color:#5a6b7b;margin-bottom:4px;}
+  .login-field input{width:100%;padding:12px 14px;border:2px solid #cdd9e0;border-radius:12px;
+    font-size:16px;font-family:inherit;transition:.2s;}
+  .login-field input:focus{outline:none;border-color:var(--sea);}
   .login-err{color:var(--coral);font-size:13px;margin-top:4px;display:none;}
-  .reading-box{max-height:380px;overflow-y:auto;margin-bottom:14px;padding-right:4px;}
-  .reading-box .event{background:#f1f8ff;border-radius:10px;padding:12px 14px;margin-bottom:10px;line-height:1.7;}
-  .reading-box .event strong{color:var(--coral);}
-  .qopt{flex:1 1 45%;min-width:120px;font-family:inherit;cursor:pointer;border:2px solid #cdd9e0;
-    background:#fff;color:var(--ink);border-radius:12px;padding:11px 8px;font-size:15px;font-weight:bold;transition:.15s;}
-  .qopt:hover:not(:disabled){border-color:var(--sea);}
-  .qopt:disabled{cursor:default;opacity:.75;}
-  .qopt.right{background:var(--green);color:#fff;border-color:var(--green);opacity:1;}
-  .qopt.wrong{background:#ffe0d6;border-color:var(--coral);color:var(--coral);}
-  .flip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0;}
-  @media(max-width:500px){.flip-grid{grid-template-columns:repeat(3,1fr);}}
-  .fc{perspective:600px;height:74px;cursor:pointer;}
-  .fc-inner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .45s;}
-  .fc.flipped .fc-inner{transform:rotateY(180deg);}
-  .fc-front,.fc-back{position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;
-    justify-content:center;font-weight:bold;font-size:13px;backface-visibility:hidden;padding:4px;}
-  .fc-front{background:linear-gradient(135deg,var(--mid),var(--deep));color:#fff;font-size:22px;}
-  .fc-back{background:#fff;color:var(--ink);border:2px solid #cdd9e0;transform:rotateY(180deg);
-    text-align:center;line-height:1.3;white-space:pre-line;}
-  .fc.matched .fc-front,.fc.matched .fc-back{
-    background:linear-gradient(135deg,var(--green),#2d6e44)!important;color:#fff!important;border:none!important;}
-  .flip-status{display:flex;justify-content:space-between;align-items:center;margin:6px 0;font-size:14px;font-weight:bold;}
-  .flip-timer{color:var(--mid);}
-  .flip-timer.warn{color:#e63946;animation:pulse .6s infinite alternate;}
-  @keyframes pulse{to{opacity:.5;}}
-  .factoid{background:#f0f8ff;border-left:4px solid var(--sea);border-radius:0 10px 10px 0;
-    padding:10px 14px;font-size:14px;margin:6px 0;color:var(--ink);line-height:1.6;display:none;}
-  .tl-wrap{display:flex;gap:14px;margin-top:10px;}
-  .tl-pool{flex:1;display:flex;flex-direction:column;gap:8px;}
-  .tl-slots{flex:1;display:flex;flex-direction:column;gap:8px;}
-  .tl-card{background:#fff;border:2px solid #cdd9e0;border-radius:12px;padding:10px 12px;
-    cursor:pointer;font-size:14px;font-weight:bold;transition:.15s;line-height:1.4;}
-  .tl-card:hover:not(.used){border-color:var(--sea);}
-  .tl-card.selected{border-color:var(--coral);background:#fff1ec;}
-  .tl-card.used{opacity:.35;cursor:default;}
-  .tl-slot{background:#eaf6fb;border:2px dashed #9cc;border-radius:12px;padding:10px 12px;
-    cursor:pointer;font-size:13px;font-weight:bold;color:var(--mid);transition:.15s;line-height:1.4;}
-  .tl-slot:hover:not(.filled){border-color:var(--sea);background:#d8f0fb;}
-  .tl-slot.filled{background:var(--green);color:#fff;cursor:default;border-style:solid;border-color:var(--green);}
-  .tl-slot.wrong-slot{animation:shake .4s;}
-  .lb-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;}
-  .lb-table th{background:var(--mid);color:#fff;padding:8px;text-align:center;}
-  .lb-table td{padding:8px;border-bottom:1px solid #eee;text-align:center;}
-  .lb-table tr.me td{background:#fff7e0;font-weight:bold;color:var(--coral);}
-  .advice-box{background:#e8f8f0;border:2px solid var(--green);border-radius:14px;
-    padding:16px;margin:12px 0;line-height:1.7;}
+  .reading-card{background:linear-gradient(135deg,#eaf6fb,#f5fbff);border:2px solid #b9def0;
+    border-radius:16px;padding:18px;margin:10px 0;line-height:1.9;font-size:15px;}
+  .reading-card h3{color:var(--mid);font-size:17px;margin-bottom:12px;}
+  .hl{background:#fff3cd;padding:1px 4px;border-radius:4px;font-weight:bold;}
   .towers{display:flex;gap:14px;justify-content:center;margin:6px 0 4px;}
   .tower{flex:1;max-width:300px;text-align:center;}
   .tower.onecol{max-width:340px;margin:0 auto;}
@@ -164,6 +120,26 @@
   .tempslider{width:100%;margin-top:14px;accent-color:var(--coral);height:8px;}
   .templabel{display:flex;justify-content:space-between;font-size:13px;color:#5a6b7b;margin-top:6px;}
   .tempnow{font-weight:bold;color:var(--coral);font-size:16px;}
+  .flip-timer{font-size:18px;font-weight:bold;text-align:center;color:var(--mid);margin:8px 0;min-height:28px;}
+  .flip-timer.warn{color:var(--coral);}
+  .flip-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0;}
+  @media(max-width:480px){.flip-grid{grid-template-columns:repeat(3,1fr);}}
+  .flipcard{height:80px;cursor:pointer;perspective:600px;}
+  .flipinner{position:relative;width:100%;height:100%;transform-style:preserve-3d;transition:transform .4s;}
+  .flipcard.flipped .flipinner,.flipcard.matched .flipinner{transform:rotateY(180deg);}
+  .flipfront,.flipback{position:absolute;width:100%;height:100%;backface-visibility:hidden;
+    border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:bold;
+    font-size:13px;text-align:center;padding:6px;line-height:1.3;}
+  .flipfront{background:linear-gradient(135deg,#168aad,#0a3d62);color:#fff;font-size:24px;}
+  .flipback{background:#eaf6fb;border:2px solid var(--sea);color:var(--ink);transform:rotateY(180deg);}
+  .flipcard.matched .flipback{background:var(--green);border-color:var(--green);color:#fff;}
+  .qopt{flex:1 1 45%;min-width:120px;font-family:inherit;cursor:pointer;border:2px solid #cdd9e0;
+    background:#fff;color:var(--ink);border-radius:12px;padding:11px 8px;font-size:14px;font-weight:bold;transition:.15s;}
+  .qopt:hover:not(:disabled){border-color:var(--sea);}
+  .qopt:disabled{cursor:default;opacity:.7;}
+  .qopt.right{background:var(--green);color:#fff;border-color:var(--green);opacity:1;}
+  .qopt.wrong{background:#ffe0d6;border-color:var(--coral);color:var(--coral);}
+  .vqq{font-size:15px;font-weight:bold;color:var(--ink);margin-bottom:8px;line-height:1.5;}
   .check{display:flex;align-items:center;gap:10px;background:#f1f6f9;border-radius:12px;
     padding:12px;margin:8px 0;cursor:pointer;font-size:15px;}
   .check input{width:22px;height:22px;accent-color:var(--green);}
@@ -180,35 +156,18 @@
   .bignum span{font-size:20px;font-weight:normal;}
   .qa{font-size:15px;margin-top:4px;font-weight:bold;color:#dff3fb;}
   .note2{font-size:14px;margin-top:8px;color:#ffe7a8;}
-  .final{text-align:center;color:#fff;padding:30px 10px;}
+  .final{text-align:center;color:var(--ink);padding:10px 0;}
   .badge{font-size:90px;animation:spin 3s linear infinite;display:inline-block;}
   @keyframes spin{to{transform:rotate(360deg);}}
   .hide{display:none;}
   .note{font-size:12px;color:#7a8a96;margin-top:14px;text-align:center;}
-  .vplayer{position:relative;border-radius:16px;overflow:hidden;cursor:pointer;
-    background:linear-gradient(135deg,#9be7ff,#168aad);height:170px;display:flex;
-    flex-direction:column;align-items:center;justify-content:center;margin:6px 0 12px;
-    box-shadow:0 8px 22px rgba(0,0,0,.2);transition:.2s;}
-  .vplayer:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(0,0,0,.28);}
-  .vthumb{font-size:54px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.2));}
-  .vplay{position:absolute;width:62px;height:62px;border-radius:50%;background:rgba(255,123,84,.95);
-    color:#fff;font-size:26px;display:flex;align-items:center;justify-content:center;
-    box-shadow:0 6px 16px rgba(0,0,0,.35);padding-left:5px;}
-  .vmeta{position:absolute;bottom:0;left:0;width:100%;background:rgba(10,61,98,.82);color:#fff;
-    font-size:13px;padding:8px 10px;text-align:center;line-height:1.5;}
-  .missions{background:#fff6ee;border:2px solid #ffd9c5;border-radius:14px;padding:14px;
-    margin-top:14px;font-size:15px;line-height:1.5;}
-  .missions div{margin-top:8px;color:#33586e;}
-  .quizwrap{background:#eef7fb;border:2px solid #b9def0;border-radius:14px;padding:14px;margin-top:14px;}
-  .vq{margin-top:12px;}
-  .vqq{font-size:15px;font-weight:bold;color:var(--ink);margin-bottom:8px;line-height:1.5;}
-  .vqopts{display:flex;flex-wrap:wrap;gap:8px;}
-  .vqopt{flex:1 1 45%;min-width:120px;font-family:inherit;cursor:pointer;border:2px solid #cdd9e0;
-    background:#fff;color:var(--ink);border-radius:12px;padding:11px 8px;font-size:15px;font-weight:bold;transition:.15s;}
-  .vqopt:hover:not(:disabled){border-color:var(--sea);}
-  .vqopt:disabled{cursor:default;opacity:.7;}
-  .vqopt.right{background:var(--green);color:#fff;border-color:var(--green);opacity:1;}
-  .vqopt.wrong{background:#ffe0d6;border-color:var(--coral);color:var(--coral);}
+  .lb-table{width:100%;border-collapse:collapse;font-size:14px;margin-top:10px;}
+  .lb-table th{background:var(--mid);color:#fff;padding:8px;text-align:center;}
+  .lb-table td{padding:8px;text-align:center;border-bottom:1px solid #e0eef5;}
+  .lb-table tr.me td{background:#ffe7a8;font-weight:bold;}
+  .advice{background:linear-gradient(135deg,#e8f8f0,#d4f0e8);border:2px solid var(--green);
+    border-radius:14px;padding:14px;margin:10px 0;font-size:14px;line-height:1.6;}
+  .advice h4{color:#2d7a55;margin-bottom:6px;font-size:15px;}
 </style>
 </head>
 <body>
@@ -219,16 +178,17 @@
     <p>大自然的雕刻 × 人類的足跡 — 互動闖關</p>
   </header>
   <div class="progress" id="progress"></div>
-  <div class="scorebar"><span id="scoreBadge">⭐ 分數 <b>0</b> ｜ ✅ 0 ｜ ❌ 0</span><span id="scoreFlash" class="scoreflash"></span></div>
+  <div class="scorebar">
+    <span id="scoreBadge">⭐ 分數 <b>0</b> ｜ ✅ 0 ｜ ❌ 0</span>
+    <span id="scoreFlash" class="scoreflash"></span>
+  </div>
   <div id="stage"></div>
   <div class="note">海山國小 · 永續發展教案 · 連結「野柳女王頭」與「浮潛海洋生態」</div>
 </div>
 <script>
 const LS_KEY='seaGame_v2';
-const STEPS=10;
-const PT_OK=10,PT_NO=5;
+const PT_OK=10,PT_NO=5,STEPS=10;
 const PAIR_COLORS=["#2d8a5f","#1e6091","#e07a3c","#7b4fb5"];
-let state={playerName:'',playerClass:'',step:0,points:0,correct:0,wrong:0,sortIdx:0,cycleNext:0,readQuizDone:new Set(),wrongCats:{pollution:0,climate:0,conservation:0,geology:0}};
 const sortCards=[
   {t:"野柳女王頭的脖子被海風海浪磨得越來越細",a:"nat"},
   {t:"海裡的珊瑚因為海水變熱而白化死亡",a:"hum"},
@@ -241,295 +201,395 @@ const sortCards=[
 ];
 const cycleAnswer=["🐠 海裡的生命","⬇️ 死亡後沉到海底","🪨 沉積變成岩石","🌊 被海水侵蝕風化","🐠 養分回到海洋"];
 const cyclePool=["🪨 沉積變成岩石","🐠 海裡的生命","🌊 被海水侵蝕風化","🐠 養分回到海洋","⬇️ 死亡後沉到海底"];
-const readingText=`<h3 style="color:var(--mid);margin-bottom:12px">🌍 近年海洋大事紀（2022–2026）</h3>
-<div class="event"><strong>2022 🌋 東加火山爆發</strong><br>海底火山爆發引發太平洋大海嘯，火山灰大量噴出，短期影響了周邊海域的水質與海洋生態。</div>
-<div class="event"><strong>2022 🌡️ 海洋熱浪</strong><br>全球多處海域出現「海洋熱浪」——海水溫度持續異常升高，珊瑚礁、魚類都受到嚴重衝擊。</div>
-<div class="event"><strong>2023 📜 聯合國《公海條約》</strong><br>聯合國通過歷史性《公海條約》，目標在2030年前保護至少30%的全球海洋，是海洋保育的重大里程碑。</div>
-<div class="event"><strong>2024 🚨 全球第四次珊瑚大白化</strong><br>科學家正式宣布地球進入第四次全球大規模珊瑚白化事件，高溫海水讓珊瑚失去共生藻而變白死亡。</div>
-<div class="event"><strong>2024 🔬 微塑膠進入食物鏈</strong><br>研究發現微塑膠（直徑不到5mm的塑膠碎片）已進入魚類體內，甚至在人類血液中被偵測到。</div>
-<div class="event"><strong>2025 🧊 海冰面積減少</strong><br>南極海冰面積連續創歷史新低，海冰消融加速了全球暖化與海平面上升的惡性循環。</div>
-<div class="event"><strong>2026 ♻️ 全球減塑行動</strong><br>多國積極立法限制一次性塑膠，並推動海洋清潔行動，守護海洋不再是夢想。</div>`;
-const readQuizData=[
-  {q:"2022年東加海底火山爆發後，對附近海洋造成了哪些影響？",opts:["讓海水溫度下降，珊瑚更健康","火山灰和氣體短期影響了水質與生態","讓太平洋魚類大量增加","只影響陸地，不影響海洋"],a:1,cat:"geology"},
-  {q:"「珊瑚白化」的主要原因是什麼？",opts:["珊瑚自然老化變白","海水污染變得太乾淨","海水溫度升高讓珊瑚失去共生藻","地震搖動讓珊瑚變白"],a:2,cat:"climate"},
-  {q:"2023年聯合國通過的《公海條約》，主要目標是什麼？",opts:["讓各國可以在公海自由捕魚","規定各國軍艦的航行路線","在2030年前保護30%的海洋","禁止所有輪船通過太平洋"],a:2,cat:"conservation"},
-  {q:"關於微塑膠，下列哪一項描述是正確的？",opts:["微塑膠只存在於陸地","微塑膠直徑大於50公分","微塑膠已進入魚類體內，甚至人類血液","微塑膠加熱後會自動消失"],a:2,cat:"pollution"},
+const landforms=[
+  {name:"👑 女王頭",cause:"砂岩被風化和海水侵蝕，脖子越變越細"},
+  {name:"🧈 豆腐岩",cause:"沿著岩石的天然裂縫，被切割成一塊塊方格"},
+  {name:"🕯️ 燭台石",cause:"中間有顆硬球，周圍被海水侵蝕成燭台形狀"},
+  {name:"🕳️ 壺穴",cause:"海浪夾帶小石頭打轉，在岩石上磨出圓洞"},
 ];
 const flipPairs=[
-  {id:0,text:"2022\n🌋東加火山",match:"影響太平洋\n海嘯與灰燼",factoid:"2022年東加火山噴發，是近代規模最大的海底火山爆發之一，海嘯波及太平洋多國。",cat:"geology"},
-  {id:1,text:"2022\n🌡️海洋熱浪",match:"海水升溫\n珊瑚白化",factoid:"海洋熱浪讓珊瑚失去共生藻，「白化」後若溫度未降，珊瑚便會死亡。",cat:"climate"},
-  {id:2,text:"2023\n📜公海條約",match:"保護公海\n30%目標",factoid:"聯合國《公海條約》是海洋保育史上的重要里程碑，目標保護30%海洋。",cat:"conservation"},
-  {id:3,text:"2024\n🚨珊瑚大白化",match:"第四次全球\n大規模白化",factoid:"2024年確認為第四次全球珊瑚大白化，受影響珊瑚礁遍及多個大洋。",cat:"climate"},
-  {id:4,text:"2024\n🔬微塑膠",match:"進入魚體\n人類血液",factoid:"微塑膠直徑小於5mm，已在海魚體內和人類血液中被科學家偵測到。",cat:"pollution"},
-  {id:5,text:"2025\n🧊海冰消融",match:"南極海冰\n歷史新低",factoid:"南極海冰持續縮小，加速全球暖化與海平面上升，威脅沿海城市。",cat:"climate"},
+  ['珊瑚白化','海水升溫'],
+  ['女王頭變細','長期風化侵蝕'],
+  ['微塑膠','混入食物鏈'],
+  ['壺穴形成','海浪夾石旋磨'],
+  ['洋流','傳播海洋垃圾'],
+  ['過度捕撈','魚類數量減少'],
 ];
-const timelineEvents=[
-  {year:2022,text:"🌋 東加海底火山爆發，引發太平洋海嘯"},
-  {year:2023,text:"📜 聯合國通過《公海條約》，保護公海生態"},
-  {year:2024,text:"🚨 全球第四次珊瑚礁大白化正式宣布"},
-  {year:2025,text:"🧊 南極海冰面積連年創歷史新低"},
-  {year:2026,text:"♻️ 各地積極推動減塑行動，守護海洋"},
+const readQuizData=[
+  {q:"野柳女王頭的脖子越來越細，最主要原因是什麼？",
+   opts:["地震讓岩石斷裂","長期受風化與海水侵蝕","人類過度觸碰","海水污染"],
+   a:1,cat:"geology",exp:"女王頭是砂岩，長期受風吹、海浪拍打侵蝕，脖子才越來越細。"},
+  {q:"珊瑚白化最主要的原因是？",
+   opts:["海水太乾淨","海水污染太嚴重","海水溫度上升（暖化）","海浪太大"],
+   a:2,cat:"climate",exp:"海水溫度升高時，珊瑚把體內共生藻趕走，失去顏色，就是「白化」。"},
+  {q:"「微塑膠」是指什麼？",
+   opts:["一種塑膠袋品牌","小到肉眼幾乎看不見的塑膠碎片","可回收的環保塑膠","藍色的塑膠垃圾"],
+   a:1,cat:"pollution",exp:"微塑膠是極細小的塑膠顆粒，會透過食物鏈進入魚類及人體內。"},
+  {q:"壺穴是如何形成的？",
+   opts:["火山噴發留下的洞","海浪夾帶石頭旋轉磨出圓洞","岩石天然裂縫被水沖開","人工開鑿"],
+   a:1,cat:"geology",exp:"海浪帶著小石頭在低窪處打轉，長年磨蝕形成圓形的「壺穴」。"},
+  {q:"相比人類對海洋的破壞，大自然對岩石的改變速度是？",
+   opts:["一樣快","比人類破壞快","比人類破壞慢很多（千萬年）","只看颱風而定"],
+   a:2,cat:"geology",exp:"自然地質變化需要百萬、千萬年；人類對海洋的破壞卻僅需幾十年。"},
 ];
-function gain(cat){state.points+=PT_OK;state.correct++;flashScore('+'+PT_OK,true);updateScore();}
-function lose(cat){state.points-=PT_NO;state.wrong++;if(cat)state.wrongCats[cat]=(state.wrongCats[cat]||0)+1;flashScore('-'+PT_NO,false);updateScore();}
-function updateScore(){const e=document.getElementById('scoreBadge');if(e)e.innerHTML='⭐ 分數 <b>'+state.points+'</b> ｜ ✅ '+state.correct+' ｜ ❌ '+state.wrong;}
-function flashScore(t,ok){const e=document.getElementById('scoreFlash');if(!e)return;e.textContent=t;e.className='scoreflash '+(ok?'up':'down');e.style.opacity='1';setTimeout(()=>{e.style.opacity='0';},700);}
-function renderProgress(){
-  const p=document.getElementById('progress');p.innerHTML='';
-  for(let i=0;i<STEPS;i++){const d=document.createElement('div');d.className='dot'+(i===state.step?' active':'')+(i<state.step?' done':'');d.textContent=i<state.step?'✓':(i+1);p.appendChild(d);}
-}
-const stage=()=>document.getElementById('stage');
-function show(html){stage().innerHTML=`<div class="card">${html}</div>`;}
+const newsQuizData=[
+  {q:"以下事件，哪一個發生得最早？",
+   opts:["全球第四次珊瑚礁大白化（2024）","東加海底火山爆發（2022）","聯合國通過《公海條約》（2023）","南極海冰面積創新低（2025）"],
+   a:1,cat:"geology",exp:"東加火山爆發於2022年，是這份大事紀中最早發生的事件。"},
+  {q:"微塑膠進入人類血液，最主要是透過什麼途徑？",
+   opts:["直接喝海水","吃了含有微塑膠的海鮮，透過食物鏈累積","在海邊游泳被皮膚吸收","塑膠袋分解成氣體吸入"],
+   a:1,cat:"pollution",exp:"微塑膠透過「食物鏈累積」：魚類吃入後，人類再吃魚，微塑膠就進入人體。"},
+  {q:"「海洋熱浪」和「珊瑚大白化」最主要的關係是？",
+   opts:["完全沒有關係","海洋熱浪讓海水升溫，直接導致珊瑚白化","珊瑚白化後才出現海洋熱浪","只有颱風才讓珊瑚白化"],
+   a:1,cat:"climate",exp:"海洋熱浪造成海水溫度異常升高，正是珊瑚白化的主要原因。"},
+  {q:"《公海條約》通過後，個人最能做什麼來支持它的目標？",
+   opts:["什麼都不用做，這是政府的事","減少塑膠使用、支持永續消費、傳播海洋保育觀念","只有科學家才能保護海洋","多搭飛機去看珊瑚礁"],
+   a:1,cat:"conservation",exp:"個人的日常行動（減塑、永續消費）直接影響海洋健康，是支持《公海條約》精神的最佳方式。"},
+  {q:"南極海冰消融，為什麼會讓全球海平面上升？",
+   opts:["海冰融化增加海洋水量，造成海平面上升","海冰融化讓海水變冷，海平面反而下降","海冰和海平面完全無關","只有北極冰融化才影響海平面"],
+   a:0,cat:"climate",exp:"陸地冰川（南極冰蓋）融化後，水流入海洋，才會使全球海平面上升。"},
+];
+
+let state={playerName:'',step:0,points:0,correct:0,wrong:0,sortIdx:0,cycleNext:0,
+  wrongCats:{pollution:0,climate:0,conservation:0,geology:0}};
+
+function gain(cat=''){state.points+=PT_OK;state.correct++;flashScore('+'+PT_OK,true);updateScore();}
+function lose(cat=''){state.points=Math.max(0,state.points-PT_NO);state.wrong++;
+  if(cat)state.wrongCats[cat]=(state.wrongCats[cat]||0)+1;flashScore('-'+PT_NO,false);updateScore();}
+function updateScore(){const e=document.getElementById('scoreBadge');
+  if(e)e.innerHTML='⭐ 分數 <b>'+state.points+'</b> ｜ ✅ '+state.correct+' ｜ ❌ '+state.wrong;}
+function flashScore(t,ok){const e=document.getElementById('scoreFlash');if(!e)return;
+  e.textContent=t;e.className='scoreflash '+(ok?'up':'down');e.style.opacity='1';
+  setTimeout(()=>{e.style.opacity='0';},700);}
+function renderProgress(){const p=document.getElementById('progress');p.innerHTML='';
+  for(let i=0;i<STEPS;i++){const d=document.createElement('div');
+    d.className='dot'+(i===state.step?' active':'')+(i<state.step?' done':'');
+    d.textContent=i<state.step?'✓':(i+1);p.appendChild(d);}}
+const stageEl=()=>document.getElementById('stage');
+function show(html){stageEl().innerHTML=`<div class="card">${html}</div>`;}
+
 function loginScreen(){
-  document.getElementById('progress').innerHTML='';
-  document.getElementById('scoreBadge').innerHTML='⭐ 分數 <b>0</b> ｜ ✅ 0 ｜ ❌ 0';
-  stage().innerHTML=`<div class="login-box"><span class="logo">🌊</span><h2>海洋偵探，歡迎登入！</h2>
-    <div class="login-field"><label>你的名字</label><input type="text" id="loginName" placeholder="請輸入姓名" maxlength="10"><div class="login-err" id="nameErr">請輸入姓名！</div></div>
-    <div class="login-field"><label>班級</label><select id="loginClass"><option value="">── 請選擇班級 ──</option><option>六年一班</option><option>六年二班</option><option>六年三班</option><option>六年四班</option><option>六年五班</option><option>六年六班</option></select><div class="login-err" id="classErr">請選擇班級！</div></div>
-    <div class="center"><button class="btn" onclick="startGame()">開始闖關 🚀</button></div></div>`;
+  stageEl().innerHTML=`<div class="card"><div class="login-box">
+    <span class="logo">🌊</span><h2>海洋偵探，歡迎！</h2>
+    <p class="sub">完成十關闖關，成為海洋守護者！</p>
+    <div class="login-field"><label>你的名字</label>
+      <input type="text" id="loginName" placeholder="請輸入姓名" maxlength="10"
+        onkeydown="if(event.key==='Enter')startGame()">
+      <div class="login-err" id="nameErr">請輸入姓名！</div></div>
+    <div class="center"><button class="btn" onclick="startGame()">開始闖關 🚀</button></div>
+  </div></div>`;
+  setTimeout(()=>document.getElementById('loginName')?.focus(),100);
 }
-function startGame(){
-  const name=document.getElementById('loginName').value.trim();const cls=document.getElementById('loginClass').value;let ok=true;
-  if(!name){document.getElementById('nameErr').style.display='block';ok=false;}else document.getElementById('nameErr').style.display='none';
-  if(!cls){document.getElementById('classErr').style.display='block';ok=false;}else document.getElementById('classErr').style.display='none';
-  if(!ok)return;state.playerName=name;state.playerClass=cls;textReading();
-}
+function startGame(){const name=document.getElementById('loginName').value.trim();
+  if(!name){document.getElementById('nameErr').style.display='block';return;}
+  state.playerName=name;textReading();}
+
 function textReading(){
-  renderProgress();updateScore();
-  show(`<span class="scene-tag">出發前 · 讀一讀</span><h2>📖 近年海洋大事紀</h2><p class="sub">先讀一讀這幾年的海洋大事，讀完後再來回答問題！</p><div class="reading-box">${readingText}</div><div class="center"><button class="btn" onclick="goto(0)">我讀完了，開始測驗 →</button></div>`);
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-function lvlReadQuiz(){
-  state.readQuizDone=new Set();let html='';
-  readQuizData.forEach((q,qi)=>{let opts='';q.opts.forEach((o,oi)=>{opts+=`<button class="qopt" id="rq${qi}o${oi}" onclick="ansReadQuiz(${qi},${oi})">${o}</button>`;});html+=`<div style="margin-bottom:20px"><div class="vqq">${qi+1}. ${q.q}</div><div class="vqopts" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${opts}</div><div class="fb" id="rqfb${qi}"></div></div>`;});
-  show(`<span class="scene-tag">關卡 1 / 10 · 文本測驗</span><h2>🔍 大事紀小考</h2><p class="sub">根據剛才讀到的內容，回答下列問題。全部答對才能繼續！</p>${html}<div class="center hide" id="readQuizNext"><button class="btn" onclick="videoStation(1)">進入影片站 →</button></div>`);
-}
-function ansReadQuiz(qi,oi){
-  if(state.readQuizDone.has(qi))return;
-  const q=readQuizData[qi];const fb=document.getElementById('rqfb'+qi);const chosen=document.getElementById('rq'+qi+'o'+oi);
-  if(oi===q.a){state.readQuizDone.add(qi);chosen.classList.add('right');gain();q.opts.forEach((_,i)=>document.getElementById('rq'+qi+'o'+i).disabled=true);fb.className='fb ok';fb.textContent='✅ 答對了！(+10)';}
-  else{chosen.classList.add('wrong');chosen.disabled=true;lose(q.cat);fb.className='fb no';fb.textContent='❌ 再想想，文本裡有提到喔～ (-5)';}
-  if(state.readQuizDone.size===readQuizData.length)document.getElementById('readQuizNext').classList.remove('hide');
-}
-const VIDEOS={
-  1:{seg:'海洋篇',name:'海灘偵察記',emoji:'🐠',id:'335299',thumb:'🏖️🌊',title:'《海灘偵察記》· 國家教育研究院 · 2019',desc:'海洋廢棄物 · 洋流 · 塑膠微粒 · 食物鏈',lead:'先看<b>海洋</b>面臨什麼危機，再去闖「海洋篇」的關卡！',mission:'海洋生物遇到什麼困難？垃圾被什麼帶來？塑膠微粒去了哪？',next:1,
-   quiz:[{q:"寄居蟹因為找不到貝殼，只好拿什麼當成自己的家？",opts:["珊瑚","塑膠垃圾／瓶蓋","海草","小石頭"],a:1},{q:"海灘上的垃圾，主要是被什麼帶到世界各地的海邊？",opts:["風","洋流","海鳥","捕魚船"],a:1},{q:"小到肉眼幾乎看不見、會進入食物鏈的塑膠碎片叫做？",opts:["塑膠微粒","塑膠袋","泡泡","沙子"],a:0}]},
-  2:{seg:'野柳篇',name:'岩石的風化作用',emoji:'🪨',id:'297977',thumb:'⛰️🗿',title:'《岩石的風化作用》· 臺中市教育局',desc:'風化作用 · 女王頭 · 土壤的由來',lead:'海洋篇完成！換看<b>野柳</b>：岩石怎麼變成女王頭，再闖「野柳篇」。',mission:'什麼是「風化作用」？野柳女王頭是怎麼形成的？',next:3,
-   quiz:[{q:"岩石經過長期風吹、日晒、雨淋，慢慢破碎或變色，這叫做什麼作用？",opts:["風化作用","光合作用","結冰作用","發酵作用"],a:0},{q:"野柳的女王頭，是被下面哪一種力量慢慢雕刻出來的？",opts:["人們用工具雕刻","風化與海水侵蝕","地震一次震成","火山爆發堆成"],a:1}]},
-};
-let vidDone={};
-function videoStation(part){
-  const V=VIDEOS[part];vidDone[part]=new Set();state.step=V.next;renderProgress();let quizHtml='';
-  V.quiz.forEach((q,qi)=>{let opts='';q.opts.forEach((o,oi)=>{opts+=`<button class="vqopt" id="vq${qi}o${oi}" onclick="answerVid(${part},${qi},${oi})">${o}</button>`;});quizHtml+=`<div class="vq"><div class="vqq">${qi+1}. ${q.q}</div><div class="vqopts">${opts}</div><div class="fb" id="vqfb${qi}"></div></div>`;});
-  show(`<span class="scene-tag">📺 看影片 · ${V.seg}</span><h2>${V.emoji} ${V.name}</h2><p class="sub">${V.lead}</p><div class="vplayer" onclick="openVideo('${V.id}')"><div class="vthumb">${V.thumb}</div><div class="vplay">▶</div><div class="vmeta">${V.title}<br><small>${V.desc}</small></div></div><div class="center"><button class="btn blue" onclick="openVideo('${V.id}')">▶️ 前往愛學網觀看</button></div><div class="missions"><b>🕵️ 看片任務（等一下要考）：</b><div>${V.emoji} ${V.mission}</div></div><div class="quizwrap"><b>🔍 看片驗證</b><p class="sub" id="quizHint" style="margin-top:4px">答案都藏在影片裡 —— 答對全部才能解鎖闖關！</p>${quizHtml}</div><div class="center hide" id="startBtn"><button class="btn" onclick="goto(${V.next})">開始闖關 →</button></div><p class="note" style="margin-top:6px">影片會在新分頁開啟。看完回到這頁作答即可。</p>`);
-}
-function answerVid(part,qi,oi){
-  const V=VIDEOS[part];const q=V.quiz[qi];const fb=document.getElementById('vqfb'+qi);if(vidDone[part].has(qi))return;
-  const chosen=document.getElementById('vq'+qi+'o'+oi);
-  if(oi===q.a){vidDone[part].add(qi);chosen.classList.add('right');gain();q.opts.forEach((o,i)=>{document.getElementById('vq'+qi+'o'+i).disabled=true;});fb.className='fb ok';fb.textContent='✅ 答對了！(+10)';}
-  else{chosen.classList.add('wrong');chosen.disabled=true;lose('pollution');fb.className='fb no';fb.textContent='❌ 再看一次影片找找看～ (-5)';}
-  if(vidDone[part].size===V.quiz.length){document.getElementById('startBtn').classList.remove('hide');document.getElementById('quizHint').innerHTML='🎉 <b>看片驗證全對！</b>可以開始闖關了。';}
-}
-function openVideo(id){window.open('https://stv.naer.edu.tw/watch/'+(id||'335299'),'_blank','noopener');}
-function lvlOceanTower(){
-  state.ocean=6;const oTxt=['寄居蟹住塑膠','海龜誤食垃圾','洋流送垃圾','塑膠微粒','海鳥吞塑膠','漁網纏住魚'];let blocks='';
-  for(let i=0;i<6;i++)blocks+=`<div class="block ocean" id="o${i}" onclick="pullOcean(${i})">${oTxt[i]}</div>`;
-  show(`<span class="scene-tag">關卡 2 / 10 · 海洋篇</span><h2>🎲 海洋抽抽樂</h2><p class="sub">影片裡海洋遇到好多麻煩。點積木把它「抽掉」，看看<b>人類的破壞</b>讓海洋多快崩潰！</p><div class="towers"><div class="tower onecol"><h3>🐠 浮潛的海洋</h3><div class="crown" id="reef">🐠🐠🐠</div><div class="neck" id="reefn">生機勃勃</div><div class="stack">${blocks}</div><div class="meter" id="ometer">人為破壞中…</div></div></div><div id="otResult"></div>`);
-}
-function pullOcean(i){
-  const b=document.getElementById('o'+i);if(b.classList.contains('gone'))return;b.classList.add('gone');state.ocean--;
-  const reef=document.getElementById('reef');const rn=document.getElementById('reefn');const left=state.ocean;
+  show(`<span class="scene-tag">出發前 · 閱讀</span>
+    <h2>📖 先讀一讀，再闖關！</h2>
+    <p class="sub">把文章讀完，等一下的闖關題目都從這裡來。</p>
+    <div class="reading-card">
+      <h3>🌊 改變中的海——自然與人類的雙重衝擊</h3>
+      <p><span class="hl">野柳地質公園</span>的女王頭，是砂岩經過數百萬年的
+      <span class="hl">風化與海水侵蝕</span>，慢慢雕塑而成的。這種自然改變速度<b>極慢</b>，
+      需要千萬年，人類無法阻止。野柳的奇特地景還有：<span class="hl">豆腐岩</span>（沿天然裂縫切割）、
+      <span class="hl">壺穴</span>（海浪夾石旋磨形成的圓洞）、燭台石等。</p><br>
+      <p>相對地，人類活動在短短幾十年間大幅改變了海洋。
+      <span class="hl">塑膠垃圾</span>被洋流帶到世界各地，
+      <span class="hl">微塑膠</span>（小到肉眼幾乎看不見的塑膠碎片）
+      透過食物鏈進入魚類及人體。過度捕撈讓魚類數量急劇減少，
+      <span class="hl">氣候暖化</span>造成海水升溫，使珊瑚失去共生藻而<span class="hl">白化</span>死亡。</p><br>
+      <p>近幾年全球大事：2022年<span class="hl">東加海底火山</span>爆發，引發海嘯；
+      2023年聯合國通過<span class="hl">《公海條約》</span>，保護公海生態；
+      2024年發生全球<span class="hl">第四次珊瑚礁大白化</span>；
+      2025年南極海冰面積創新低，海平面上升威脅加劇。</p><br>
+      <p>🔑 <b>核心概念</b>：<br>
+      🪨 自然的改變——慢、不可逆，我們珍惜它<br>
+      🐠 人為的改變——快、可阻止，我們<b>有能力</b>改變它！</p>
+    </div>
+    <div class="center"><button class="btn" onclick="goto(0)">我讀完了，開始作答 →</button></div>`);}
+
+let rqDone=new Set();
+function lvlReadQuiz(){rqDone=new Set();let html='';
+  readQuizData.forEach((q,qi)=>{let opts='';
+    q.opts.forEach((o,oi)=>{opts+=`<button class="qopt" id="rq${qi}o${oi}" onclick="ansRQ(${qi},${oi})">${o}</button>`;});
+    html+=`<div style="margin-bottom:20px"><div class="vqq">${qi+1}. ${q.q}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${opts}</div>
+      <div class="fb" id="rqfb${qi}"></div></div>`;});
+  show(`<span class="scene-tag">關卡 1 / 10 · 文本測驗</span>
+    <h2>📝 讀文測驗</h2>
+    <p class="sub">根據剛才閱讀的文章作答。答對 <b>+10</b>，答錯 <b>-5</b>。</p>
+    ${html}
+    <div class="center hide" id="rqNext">
+      <button class="btn" onclick="goto(1)">下一關：海洋抽抽樂 →</button></div>`);}
+function ansRQ(qi,oi){if(rqDone.has(qi))return;
+  const q=readQuizData[qi],fb=document.getElementById('rqfb'+qi),chosen=document.getElementById('rq'+qi+'o'+oi);
+  if(oi===q.a){rqDone.add(qi);chosen.classList.add('right');gain(q.cat);
+    q.opts.forEach((_,i)=>document.getElementById('rq'+qi+'o'+i).disabled=true);
+    fb.className='fb ok';fb.innerHTML=`✅ 答對！(+10) <span style="font-weight:normal;font-size:13px">💡 ${q.exp}</span>`;
+  }else{chosen.classList.add('wrong');chosen.disabled=true;lose(q.cat);fb.className='fb no';fb.textContent='❌ 再想想！(-5)';}
+  if(rqDone.size===readQuizData.length)document.getElementById('rqNext').classList.remove('hide');}
+
+function lvlOceanTower(){state.ocean=6;
+  const oTxt=['寄居蟹住塑膠','海龜誤食垃圾','洋流送垃圾','塑膠微粒','海鳥吞塑膠','漁網纏住魚'];
+  let blocks='';for(let i=0;i<6;i++)blocks+=`<div class="block ocean" id="o${i}" onclick="pullOcean(${i})">${oTxt[i]}</div>`;
+  show(`<span class="scene-tag">關卡 2 / 10 · 海洋篇</span><h2>🎲 海洋抽抽樂</h2>
+    <p class="sub">點積木把它「抽掉」，看看<b>人類的破壞</b>讓海洋多快崩潰！</p>
+    <div class="towers"><div class="tower onecol"><h3>🐠 浮潛的海洋</h3>
+      <div class="crown" id="reef">🐠🐠🐠</div><div class="neck" id="reefn">生機勃勃</div>
+      <div class="stack">${blocks}</div><div class="meter" id="ometer">人為破壞中…</div>
+    </div></div><div id="otResult"></div>`);}
+function pullOcean(i){const b=document.getElementById('o'+i);if(b.classList.contains('gone'))return;
+  b.classList.add('gone');state.ocean--;
+  const reef=document.getElementById('reef'),rn=document.getElementById('reefn'),left=state.ocean;
   reef.textContent='🐠'.repeat(Math.max(left-2,0))||'🌫️';
-  const states=['生機勃勃','寄居蟹找不到貝殼','海龜被垃圾纏住','珊瑚變白、生物逃走','只剩塑膠微粒漂浮','一片死寂'];
-  rn.textContent='短短幾十年… '+states[Math.min(6-left,5)];
+  const sts=['生機勃勃','寄居蟹找不到貝殼','海龜被垃圾纏住','珊瑚變白、生物逃走','只剩塑膠微粒漂浮','一片死寂'];
+  rn.textContent='短短幾十年… '+sts[Math.min(6-left,5)];
   document.getElementById('ometer').textContent=`已破壞 ${6-left} 層（超快，數十年）`;
-  if(state.ocean<=0){reef.textContent='🌫️';rn.textContent='生態系崩潰…';document.getElementById('otResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 海洋的崩壞是<b>人類</b>造成的，速度<b>超快</b>（幾十年）—— 但好消息：<b>我們可以阻止它！</b></p><div class="center"><button class="btn blue" onclick="goto(2)">下一關 →</button></div>`;}
-}
+  if(state.ocean<=0){reef.textContent='🌫️';rn.textContent='生態系崩潰…';
+    document.getElementById('otResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 海洋的崩壞是<b>人類</b>造成的，速度<b>超快</b>——但我們<b>可以阻止它！</b></p>
+    <div class="center"><button class="btn blue" onclick="goto(2)">下一關 →</button></div>`;}}
+
 function lvlCoral(){
-  show(`<span class="scene-tag">關卡 3 / 10 · 海洋篇</span><h2>🌡️ 珊瑚白化實驗室</h2><p class="sub">浮潛時看到的美麗珊瑚，最怕海水變熱。<br>拖動下面的溫度計，看看海水升溫時珊瑚會發生什麼事！</p><div class="coralbox"><div class="coral" id="coralFace">🪸</div><div class="coralstat" id="coralStat">健康的珊瑚，住著好多小魚 🐠🐠🐠</div></div><input type="range" min="26" max="32" step="1" value="26" id="tempR" class="tempslider" oninput="updCoral(this.value)"><div class="templabel"><span>26°C 涼爽</span><span id="tempNow" class="tempnow">26°C</span><span>32°C 過熱</span></div><div id="coralQ" class="hide"><p class="sub" style="margin-top:16px"><b>🔬 小科學家，下結論：</b>珊瑚為什麼會白化死亡？</p><div class="choose"><button class="nb" onclick="coralAns(false)">海水變乾淨了</button><button class="hb" onclick="coralAns(true)">海水溫度上升（暖化）</button></div><div class="fb" id="coralFb"></div></div>`);
-}
-function updCoral(v){
-  v=+v;document.getElementById('tempNow').textContent=v+'°C';const f=document.getElementById('coralFace'),s=document.getElementById('coralStat');
+  show(`<span class="scene-tag">關卡 3 / 10 · 海洋篇</span><h2>🌡️ 珊瑚白化實驗室</h2>
+    <p class="sub">拖動溫度計，看看海水升溫時珊瑚會發生什麼事！</p>
+    <div class="coralbox"><div class="coral" id="coralFace">🪸</div>
+      <div class="coralstat" id="coralStat">健康的珊瑚，住著好多小魚 🐠🐠🐠</div></div>
+    <input type="range" min="26" max="32" step="1" value="26" id="tempR" class="tempslider" oninput="updCoral(this.value)">
+    <div class="templabel"><span>26°C 涼爽</span><span id="tempNow" class="tempnow">26°C</span><span>32°C 過熱</span></div>
+    <div id="coralQ" class="hide">
+      <p class="sub" style="margin-top:16px"><b>🔬 下結論：</b>珊瑚為什麼會白化死亡？</p>
+      <div class="choose">
+        <button class="nb" onclick="coralAns(false)">海水變乾淨了</button>
+        <button class="hb" onclick="coralAns(true)">海水溫度上升（暖化）</button>
+      </div><div class="fb" id="coralFb"></div></div>`);}
+function updCoral(v){v=+v;document.getElementById('tempNow').textContent=v+'°C';
+  const f=document.getElementById('coralFace'),s=document.getElementById('coralStat');
   if(v<=27){f.style.filter='none';s.textContent='健康的珊瑚，住著好多小魚 🐠🐠🐠';}
   else if(v<=29){f.style.filter='saturate(.4) brightness(1.2)';s.textContent='珊瑚有點不舒服，顏色開始變淡… 🐠';}
-  else{f.style.filter='grayscale(1) brightness(1.7)';s.textContent='💀 珊瑚白化了！小魚全都游走了…';document.getElementById('coralQ').classList.remove('hide');}
-}
-function coralAns(correct){
-  const fb=document.getElementById('coralFb');
-  if(correct){gain();document.querySelectorAll('#coralQ .choose button').forEach(b=>b.disabled=true);fb.className='fb ok';fb.innerHTML='✅ 沒錯！(+10)<b>海水溫度上升</b>會讓珊瑚把體內的共生藻趕走而變白、死亡。這是<b>氣候變遷</b>造成的——但也是我們<b>可以努力減碳去阻止</b>的改變！<div class="center"><button class="btn blue" onclick="videoStation(2)">看下一支影片 →</button></div>';}
-  else{lose('climate');fb.className='fb no';fb.textContent='❌ 扣 5 分！再想想，剛剛溫度計往上拉時發生了什麼事？';}
-}
-function lvlRockTower(){
-  state.rock=6;let blocks='';for(let i=0;i<6;i++)blocks+=`<div class="block rock" id="r${i}" onclick="pullRock(${i})">岩層</div>`;
-  show(`<span class="scene-tag">關卡 4 / 10 · 野柳篇</span><h2>🎲 野柳抽抽樂</h2><p class="sub">影片說女王頭是<b>風化作用</b>慢慢雕出來的。點積木代表岩石被一點點風化，看看女王頭會怎樣！</p><div class="towers"><div class="tower onecol"><h3>🪨 野柳女王頭</h3><div class="crown" id="crown">👸</div><div class="neck" id="neck">脖子粗粗的</div><div class="stack">${blocks}</div><div class="meter" id="rmeter">自然風化中…</div></div></div><div id="rtResult"></div>`);
-}
-function pullRock(i){
-  const b=document.getElementById('r'+i);if(b.classList.contains('gone'))return;b.classList.add('gone');state.rock--;
-  const crown=document.getElementById('crown');const neck=document.getElementById('neck');const m=6-state.rock;
+  else{f.style.filter='grayscale(1) brightness(1.7)';s.textContent='💀 珊瑚白化了！小魚全都游走了…';
+    document.getElementById('coralQ').classList.remove('hide');}}
+function coralAns(correct){const fb=document.getElementById('coralFb');
+  if(correct){gain('climate');document.querySelectorAll('#coralQ .choose button').forEach(b=>b.disabled=true);
+    fb.className='fb ok';fb.innerHTML='✅ 沒錯！(+10) <b>海水溫度上升</b>會讓珊瑚白化死亡。<div class="center"><button class="btn blue" onclick="goto(3)">下一關 →</button></div>';
+  }else{lose('climate');fb.className='fb no';fb.textContent='❌ 扣 5 分！再想想，剛剛溫度計往上拉時發生了什麼事？';}}
+
+function lvlRockTower(){state.rock=6;let blocks='';
+  for(let i=0;i<6;i++)blocks+=`<div class="block rock" id="r${i}" onclick="pullRock(${i})">岩層</div>`;
+  show(`<span class="scene-tag">關卡 4 / 10 · 野柳篇</span><h2>🎲 野柳抽抽樂</h2>
+    <p class="sub">女王頭是<b>風化作用</b>慢慢雕出來的。點積木代表岩石被一點點風化！</p>
+    <div class="towers"><div class="tower onecol"><h3>🪨 野柳女王頭</h3>
+      <div class="crown" id="crown">👸</div><div class="neck" id="neck">脖子粗粗的</div>
+      <div class="stack">${blocks}</div><div class="meter" id="rmeter">自然風化中…</div>
+    </div></div><div id="rtResult"></div>`);}
+function pullRock(i){const b=document.getElementById('r'+i);if(b.classList.contains('gone'))return;
+  b.classList.add('gone');state.rock--;
+  const crown=document.getElementById('crown'),neck=document.getElementById('neck'),m=6-state.rock;
   const necks=['脖子粗粗的','慢慢變細…','更細了…','好細好細…','快撐不住…','搖搖欲墜…'];
-  neck.textContent='經過數百萬年… '+(necks[Math.min(m,5)]);crown.style.transform=`scaleX(${1-m*0.12})`;
+  neck.textContent='經過數百萬年… '+necks[Math.min(m,5)];
+  crown.style.transform=`scaleX(${1-m*0.12})`;
   document.getElementById('rmeter').textContent=`已風化 ${m} 層（極慢，千萬年）`;
-  if(state.rock<=0){crown.textContent='💔';neck.textContent='女王頭斷了…';document.getElementById('rtResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 女王頭的改變是<b>大自然</b>造成的，速度<b>極慢</b>（千萬年），而且<b>無法挽回</b>—— 我們只能珍惜與記錄。</p><div class="center"><button class="btn blue" onclick="goto(4)">下一關 →</button></div>`;}
-}
-const landforms=[{name:"👑 女王頭",cause:"砂岩被風化和海水侵蝕，脖子越變越細"},{name:"🧈 豆腐岩",cause:"沿著岩石的天然裂縫，被切割成一塊塊方格"},{name:"🕯️ 燭台石",cause:"中間有顆硬球，周圍被海水侵蝕成燭台形狀"},{name:"🕳️ 壺穴",cause:"海浪夾帶小石頭打轉，在岩石上磨出圓洞"}];
+  if(state.rock<=0){crown.textContent='💔';neck.textContent='女王頭斷了…';
+    document.getElementById('rtResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 女王頭的改變是<b>大自然</b>造成的，速度<b>極慢</b>（千萬年），無法挽回——我們只能珍惜。</p>
+    <div class="center"><button class="btn blue" onclick="goto(4)">下一關 →</button></div>`;}}
+
 let lfSel=null,lfMatched=0;
-function lvlLandform(){
-  lfSel=null;lfMatched=0;const order=[0,1,2,3].sort(()=>Math.random()-0.5);let left='',right='';
+function lvlLandform(){lfSel=null;lfMatched=0;
+  const order=[0,1,2,3].sort(()=>Math.random()-0.5);let left='',right='';
   landforms.forEach((l,i)=>{left+=`<button class="lfbtn" id="lf${i}" onclick="selLeft(${i})">${l.name}</button>`;});
   order.forEach(oi=>{right+=`<button class="lfbtn cz" id="cz${oi}" onclick="selRight(${oi})">${landforms[oi].cause}</button>`;});
-  show(`<span class="scene-tag">關卡 5 / 10 · 野柳篇</span><h2>🔗 野柳地景連連看</h2><p class="sub">這些都是野柳的奇岩！先點左邊的<b>地景</b>，再點右邊它的<b>形成原因</b>，配對成功就會變綠。</p><div class="match"><div class="mcol" id="mleft">${left}</div><div class="mcol" id="mright">${right}</div></div><div class="fb" id="lffb"></div>`);
-}
-function selLeft(i){if(document.getElementById('lf'+i).classList.contains('right'))return;lfSel=i;document.querySelectorAll('#mleft .lfbtn').forEach(b=>b.classList.remove('sel'));document.getElementById('lf'+i).classList.add('sel');}
-function selRight(oi){
-  const fb=document.getElementById('lffb');const cz=document.getElementById('cz'+oi);if(cz.classList.contains('right'))return;
+  show(`<span class="scene-tag">關卡 5 / 10 · 野柳篇</span><h2>🔗 野柳地景連連看</h2>
+    <p class="sub">先點左邊的<b>地景</b>，再點右邊它的<b>形成原因</b>。</p>
+    <div class="match"><div class="mcol" id="mleft">${left}</div><div class="mcol" id="mright">${right}</div></div>
+    <div class="fb" id="lffb"></div>`);}
+function selLeft(i){if(document.getElementById('lf'+i).classList.contains('right'))return;
+  lfSel=i;document.querySelectorAll('#mleft .lfbtn').forEach(b=>b.classList.remove('sel'));
+  document.getElementById('lf'+i).classList.add('sel');}
+function selRight(oi){const fb=document.getElementById('lffb'),cz=document.getElementById('cz'+oi);
+  if(cz.classList.contains('right'))return;
   if(lfSel===null){fb.className='fb no';fb.textContent='👈 先點左邊的地景，再點原因喔！';return;}
-  if(oi===lfSel){
-    const col=PAIR_COLORS[lfMatched%PAIR_COLORS.length];const lb=document.getElementById('lf'+lfSel);
-    [lb,cz].forEach(el=>{el.classList.add('right');el.classList.remove('sel');el.style.background=col;el.style.borderColor=col;el.style.color='#fff';});
-    lfMatched++;lfSel=null;gain();fb.className='fb ok';fb.textContent='✅ 配對成功！(+10)';
-    if(lfMatched===landforms.length)fb.innerHTML='🎉 全部配對完成！這些奇岩都是<b>風化與海水侵蝕</b>慢慢雕出來的。<div class="center"><button class="btn blue" onclick="goto(5)">下一關 →</button></div>';
-  }else{cz.classList.add('shake');setTimeout(()=>cz.classList.remove('shake'),400);lose('geology');fb.className='fb no';fb.textContent='❌ 不是這個原因，扣 5 分，再想想～';}
-}
+  if(oi===lfSel){const col=PAIR_COLORS[lfMatched%PAIR_COLORS.length],lb=document.getElementById('lf'+lfSel);
+    [lb,cz].forEach(el=>{el.classList.add('right');el.classList.remove('sel');
+      el.style.background=col;el.style.borderColor=col;el.style.color='#fff';});
+    lfMatched++;lfSel=null;gain('geology');fb.className='fb ok';fb.textContent='✅ 配對成功！(+10)';
+    if(lfMatched===landforms.length)fb.innerHTML='🎉 全部配對完成！<div class="center"><button class="btn blue" onclick="goto(5)">下一關 →</button></div>';
+  }else{cz.classList.add('shake');setTimeout(()=>cz.classList.remove('shake'),400);
+    lose('geology');fb.className='fb no';fb.textContent='❌ 不是這個原因，扣 5 分～';}}
+
 function lvl2(){state.sortIdx=0;renderSort();}
 function renderSort(){
-  if(state.sortIdx>=sortCards.length){show(`<span class="scene-tag">關卡 6 / 10 · 統整</span><h2>🎯 分類高手！</h2><p class="sub">看完兩支影片、玩過兩座塔，你已經能分辨：<br>🪨 <b>自然的改變</b>＝慢、不可逆，我們珍惜它<br>🐠 <b>人為的改變</b>＝快、可逆，我們<b>能改變它</b>！</p><div class="center"><button class="btn blue" onclick="goto(6)">下一關 →</button></div>`);return;}
+  if(state.sortIdx>=sortCards.length){show(`<span class="scene-tag">關卡 6 / 10 · 統整</span>
+    <h2>🎯 分類高手！</h2>
+    <p class="sub">🪨 <b>自然的改變</b>＝慢、不可逆　🐠 <b>人為的改變</b>＝快、可阻止！</p>
+    <div class="center"><button class="btn blue" onclick="goto(6)">下一關 →</button></div>`);return;}
   const c=sortCards[state.sortIdx];
-  show(`<span class="scene-tag">關卡 6 / 10 · 統整 · 第 ${state.sortIdx+1}/${sortCards.length} 題</span><h2>🗂️ 這是哪一種改變？</h2><p class="sub">讀一讀，判斷它是「自然的改變」還是「人為的改變」。</p><div class="cardq">${c.t}</div><div class="choose"><button class="nb" onclick="answerSort('nat')">🪨 自然的改變<br><small>慢 · 不可逆</small></button><button class="hb" onclick="answerSort('hum')">🐠 人為的改變<br><small>快 · 可阻止</small></button></div><div class="fb" id="sfb"></div>`);
-}
-function answerSort(a){
-  const c=sortCards[state.sortIdx];const fb=document.getElementById('sfb');
-  if(a===c.a){gain();fb.className='fb ok';fb.textContent='✅ 答對了！(+10)';setTimeout(()=>{state.sortIdx++;renderSort();},800);}
-  else{lose(c.a==='nat'?'geology':'pollution');fb.className='fb no';fb.textContent=(c.a==='nat'?'❌ 這是大自然慢慢造成的，扣 5 分，再選一次！':'❌ 這是人類造成的破壞，扣 5 分，再選一次！');}
-}
-function lvl3(){
-  state.cycleNext=0;let slots='',chips='';
-  for(let i=0;i<cycleAnswer.length;i++)slots+=`<div class="slot" id="slot${i}">?</div>`+(i<cycleAnswer.length-1?'<span class="arrow">➡️</span>':'<span class="arrow">🔁</span>');
+  show(`<span class="scene-tag">關卡 6 / 10 · 統整 · 第 ${state.sortIdx+1}/${sortCards.length} 題</span>
+    <h2>🗂️ 這是哪一種改變？</h2><div class="cardq">${c.t}</div>
+    <div class="choose">
+      <button class="nb" onclick="ansSort('nat')">🪨 自然的改變<br><small>慢 · 不可逆</small></button>
+      <button class="hb" onclick="ansSort('hum')">🐠 人為的改變<br><small>快 · 可阻止</small></button>
+    </div><div class="fb" id="sfb"></div>`);}
+function ansSort(a){const c=sortCards[state.sortIdx],fb=document.getElementById('sfb');
+  if(a===c.a){gain();fb.className='fb ok';fb.textContent='✅ 答對了！(+10)';
+    setTimeout(()=>{state.sortIdx++;renderSort();},800);
+  }else{lose();fb.className='fb no';
+    fb.textContent=(c.a==='nat'?'❌ 這是大自然慢慢造成的，扣 5 分！':'❌ 這是人類造成的破壞，扣 5 分！');}}
+
+function lvl3(){state.cycleNext=0;let slots='',chips='';
+  for(let i=0;i<cycleAnswer.length;i++)
+    slots+=`<div class="slot" id="slot${i}">?</div>`+(i<cycleAnswer.length-1?'<span class="arrow">➡️</span>':'<span class="arrow">🔁</span>');
   cyclePool.forEach((c,i)=>{chips+=`<button class="chip" id="chip${i}" onclick="pickCycle(${i})">${c}</button>`;});
-  show(`<span class="scene-tag">關卡 7 / 10 · 統整</span><h2>🔄 海與岩的循環</h2><p class="sub">原來野柳的岩石裡找得到海洋化石！<br>依正確順序點選卡片，排出「海 → 岩 → 海」的循環。</p><div class="cycle">${slots}</div><div class="pick">${chips}</div><div class="fb" id="cfb"></div>`);
-}
-function pickCycle(i){
-  const want=cycleAnswer[state.cycleNext];const chip=document.getElementById('chip'+i);
-  if(cyclePool[i]===want){
-    const slot=document.getElementById('slot'+state.cycleNext);slot.textContent=want;slot.classList.add('filled');chip.disabled=true;state.cycleNext++;gain();
+  show(`<span class="scene-tag">關卡 7 / 10 · 統整</span><h2>🔄 海與岩的循環</h2>
+    <p class="sub">依正確順序點選卡片，排出「海 → 岩 → 海」的循環。</p>
+    <div class="cycle">${slots}</div><div class="pick">${chips}</div><div class="fb" id="cfb"></div>`);}
+function pickCycle(i){const want=cycleAnswer[state.cycleNext],chip=document.getElementById('chip'+i);
+  if(cyclePool[i]===want){const slot=document.getElementById('slot'+state.cycleNext);
+    slot.textContent=want;slot.classList.add('filled');chip.disabled=true;state.cycleNext++;gain();
     const fb=document.getElementById('cfb');fb.className='fb ok';fb.textContent='✅ 順序正確！(+10)';
-    if(state.cycleNext>=cycleAnswer.length)fb.innerHTML='🎉 完成循環！<br><span class="sub">原來海和陸、生命和岩石，是同一個地球在循環。</span><div class="center"><button class="btn blue" onclick="goto(7)">最後統整關 →</button></div>';
-  }else{lose('geology');const fb=document.getElementById('cfb');fb.className='fb no';fb.textContent='❌ 順序不對，扣 5 分！';}
-}
+    if(state.cycleNext>=cycleAnswer.length)fb.innerHTML='🎉 完成循環！<div class="center"><button class="btn blue" onclick="goto(7)">下一關 →</button></div>';
+  }else{lose();const fb=document.getElementById('cfb');fb.className='fb no';
+    fb.textContent='❌ 順序不對，扣 5 分！應該接「'+want.replace(/[🐠🪨🌊⬇️ ]/g,'')+'」';}}
+
+let flipFirst=null,flipMatched=new Set(),flipTimer=null,flipTimeLeft=120,flipLocked=false;
+function lvlFlipCard(){flipFirst=null;flipMatched=new Set();flipLocked=false;flipTimeLeft=120;
+  if(flipTimer)clearInterval(flipTimer);
+  let cards=[];
+  flipPairs.forEach((p,pi)=>{cards.push({pi,side:0,txt:p[0]});cards.push({pi,side:1,txt:p[1]});});
+  cards.sort(()=>Math.random()-0.5);let grid='';
+  cards.forEach((c,ci)=>{grid+=`<div class="flipcard" id="fc${ci}" data-pi="${c.pi}" data-side="${c.side}" onclick="flipClick(${ci})">
+    <div class="flipinner"><div class="flipfront">🌊</div><div class="flipback">${c.txt}</div></div></div>`;});
+  show(`<span class="scene-tag">關卡 8 / 10 · 翻牌配對</span><h2>🃏 海洋知識翻翻樂</h2>
+    <p class="sub">翻開兩張有<b>關聯</b>的卡片配對！限時 <b>2 分鐘</b>，答對 +10，答錯 -5。</p>
+    <div class="flip-timer" id="flipTimer">⏱ 剩餘時間：02:00</div>
+    <div class="flip-grid">${grid}</div><div class="fb" id="flipFb"></div>
+    <div class="center hide" id="flipNext"><button class="btn" onclick="goto(8)">下一關：深度思考 →</button></div>`);
+  flipTimer=setInterval(flipTick,1000);}
+function flipTick(){flipTimeLeft--;const el=document.getElementById('flipTimer');
+  if(!el){clearInterval(flipTimer);return;}
+  const m=Math.floor(flipTimeLeft/60),s=flipTimeLeft%60;
+  el.textContent=`⏱ 剩餘時間：${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  if(flipTimeLeft<=10)el.classList.add('warn');
+  if(flipTimeLeft<=0){clearInterval(flipTimer);el.textContent='⏱ 時間到！';
+    const fb=document.getElementById('flipFb');
+    if(fb){fb.className='fb no';fb.textContent='⏰ 時間到！繼續下一關。';}
+    document.getElementById('flipNext')?.classList.remove('hide');
+    document.querySelectorAll('.flipcard:not(.matched)').forEach(c=>c.style.pointerEvents='none');}}
+function flipClick(ci){if(flipLocked)return;
+  const card=document.getElementById('fc'+ci);
+  if(card.classList.contains('matched')||card.classList.contains('flipped')||flipFirst===ci)return;
+  card.classList.add('flipped');
+  if(flipFirst===null){flipFirst=ci;return;}
+  const c1=document.getElementById('fc'+flipFirst);
+  const pi1=+c1.dataset.pi,side1=+c1.dataset.side,pi2=+card.dataset.pi,side2=+card.dataset.side;
+  if(pi1===pi2&&side1!==side2){c1.classList.add('matched');card.classList.add('matched');
+    flipMatched.add(pi1);flipFirst=null;gain();
+    const fb=document.getElementById('flipFb');fb.className='fb ok';fb.textContent='✅ 配對成功！(+10)';
+    if(flipMatched.size===flipPairs.length){clearInterval(flipTimer);
+      document.getElementById('flipTimer').textContent='🎉 全部配對完成！';
+      fb.innerHTML='🎉 太棒了，全部配對完成！';
+      document.getElementById('flipNext').classList.remove('hide');}
+  }else{flipLocked=true;lose();
+    const fb=document.getElementById('flipFb');fb.className='fb no';fb.textContent='❌ 不是一對，翻回去！(-5)';
+    setTimeout(()=>{c1.classList.remove('flipped');card.classList.remove('flipped');flipFirst=null;flipLocked=false;},1000);}}
+
+let nqDone=new Set();
+function lvlNewsQuiz(){nqDone=new Set();let html='';
+  newsQuizData.forEach((q,qi)=>{let opts='';
+    q.opts.forEach((o,oi)=>{opts+=`<button class="qopt" id="nq${qi}o${oi}" onclick="ansNQ(${qi},${oi})">${o}</button>`;});
+    html+=`<div style="margin-bottom:22px"><div class="vqq">${qi+1}. ${q.q}</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${opts}</div>
+      <div class="fb" id="nqfb${qi}"></div></div>`;});
+  show(`<span class="scene-tag">關卡 9 / 10 · 深度思考</span><h2>🧠 海洋大事深度題</h2>
+    <p class="sub">不只考記憶——要<b>分析</b>和<b>應用</b>你學到的知識！答對 +10，答錯 -5。</p>
+    ${html}
+    <div class="center hide" id="nqNext"><button class="btn" onclick="goto(9)">進入最後一關 🌱 →</button></div>`);}
+function ansNQ(qi,oi){if(nqDone.has(qi))return;
+  const q=newsQuizData[qi],fb=document.getElementById('nqfb'+qi),chosen=document.getElementById('nq'+qi+'o'+oi);
+  if(oi===q.a){nqDone.add(qi);chosen.classList.add('right');gain(q.cat);
+    q.opts.forEach((_,i)=>document.getElementById('nq'+qi+'o'+i).disabled=true);
+    fb.className='fb ok';fb.innerHTML=`✅ 答對！(+10) <span style="font-weight:normal;font-size:13px">💡 ${q.exp}</span>`;
+  }else{chosen.classList.add('wrong');chosen.disabled=true;lose(q.cat);fb.className='fb no';fb.textContent='❌ 再想想！(-5)';}
+  if(nqDone.size===newsQuizData.length)document.getElementById('nqNext').classList.remove('hide');}
+
 function lvl4(){
-  const acts=["🛒 買東西自備購物袋、不買過度包裝","🥤 自備水壺，少用一次性塑膠","🗑️ 看到海邊垃圾主動撿起、做好分類","🐟 認識永續海鮮，吃對魚","📣 把今天學到的告訴家人朋友"];
+  const acts=["🛒 買東西自備購物袋、不買過度包裝","🥤 自備水壺，少用一次性塑膠",
+    "🗑️ 看到海邊垃圾主動撿起、做好分類","🐟 認識永續海鮮，吃對魚","📣 把今天學到的告訴家人朋友"];
   let list='';acts.forEach((a,i)=>{list+=`<label class="check"><input type="checkbox" onchange="updPledge()" id="act${i}"><span>${a}</span></label>`;});
-  show(`<span class="scene-tag">關卡 8 / 10 · 統整</span><h2>🌱 我是改變的力量</h2><p class="sub">有些改變我們只能珍惜（女王頭終會風化）；<br>有些改變我們<b>可以阻止</b>（海洋污染與暖化）。<br>勾選你做得到的行動，寫下你的永續宣言！</p>${list}<textarea id="vow" placeholder="✍️ 寫下我的永續宣言：我承諾……" oninput="updPledge()"></textarea><div id="pledgeBox"></div><div class="center"><button class="btn" id="finishBtn" disabled onclick="goto(8)">繼續挑戰新關卡 🏅</button><div class="fb" id="vowHint" style="font-size:14px;color:#c0612e">✍️ 先勾一個行動、並寫下你的永續宣言，才能繼續喔！</div></div>`);
-}
-function updPledge(){
-  let n=0;for(let i=0;i<5;i++){if(document.getElementById('act'+i)?.checked)n++;}
-  const vow=document.getElementById('vow').value.trim();const box=document.getElementById('pledgeBox');
-  if(n>0||vow)box.innerHTML=`<div class="pledge"><div class="star">⭐</div><h3>我的永續宣言卡</h3><div class="big">我選擇了 <b>${n}</b> 個護海行動${vow?'<br>「'+vow+'」':''}</div><div class="sub" style="color:#cdeefb">分辨能改變的，並為它行動 — 這就是永續！</div></div>`;
+  show(`<span class="scene-tag">關卡 10 / 10 · 最終關</span><h2>🌱 我是改變的力量</h2>
+    <p class="sub">有些改變只能珍惜；有些改變我們<b>可以阻止</b>。<br>勾選行動，寫下你的永續宣言！</p>
+    ${list}
+    <textarea id="vow" placeholder="✍️ 寫下我的永續宣言：我承諾……" oninput="updPledge()"></textarea>
+    <div id="pledgeBox"></div>
+    <div class="center">
+      <button class="btn" id="finishBtn" disabled onclick="finish()">完成闖關，看我的成績 🏅</button>
+      <div class="fb" id="vowHint" style="font-size:14px;color:#c0612e">✍️ 先勾一個行動、並寫下你的永續宣言，才能完成闖關喔！</div>
+    </div>`);}
+function updPledge(){let n=0;for(let i=0;i<5;i++)if(document.getElementById('act'+i)?.checked)n++;
+  const vow=document.getElementById('vow').value.trim(),box=document.getElementById('pledgeBox');
+  if(n>0||vow)box.innerHTML=`<div class="pledge"><div class="star">⭐</div><h3>我的永續宣言卡</h3>
+    <div class="big">我選擇了 <b>${n}</b> 個護海行動${vow?'<br>「'+vow+'」':''}</div>
+    <div class="sub" style="color:#cdeefb">分辨能改變的，並為它行動 — 這就是永續！</div></div>`;
   else box.innerHTML='';
-  const btn=document.getElementById('finishBtn');const hint=document.getElementById('vowHint');
-  if(btn){const ok=(n>0&&vow.length>0);btn.disabled=!ok;if(hint)hint.classList.toggle('hide',ok);}
-}
-let flipSt={cards:[],timer:null,timeLeft:120,matched:0,flipped:[],locked:false};
-function lvlFlipCard(){
-  clearInterval(flipSt.timer);const allCards=[];
-  flipPairs.forEach(p=>{allCards.push({pairId:p.id,type:'event',text:p.text,cat:p.cat,factoid:p.factoid});allCards.push({pairId:p.id,type:'match',text:p.match,cat:p.cat,factoid:p.factoid});});
-  for(let i=allCards.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[allCards[i],allCards[j]]=[allCards[j],allCards[i]];}
-  flipSt={cards:allCards,timer:null,timeLeft:120,matched:0,flipped:[],locked:false};
-  let grid='';allCards.forEach((_,i)=>{grid+=`<div class="fc" id="fc${i}" onclick="flipCard(${i})"><div class="fc-inner"><div class="fc-front">🌊</div><div class="fc-back" id="fcb${i}"></div></div></div>`;});
-  show(`<span class="scene-tag">關卡 9 / 10 · 新挑戰</span><h2>🎴 海洋大事翻牌配對</h2><p class="sub">翻開卡片，找出每個<b>大事件</b>與對應的<b>描述</b>，時間 2 分鐘！</p><div class="flip-status"><span>已配對：<b id="matchedCount">0</b> / ${flipPairs.length}</span><span class="flip-timer" id="flipTimer">⏱ 2:00</span></div><div class="flip-grid">${grid}</div><div class="fb" id="flipFb"></div><div class="factoid" id="flipFactoid"></div>`);
-  allCards.forEach((c,i)=>{const el=document.getElementById('fcb'+i);if(el)el.textContent=c.text;});
-  flipSt.timer=setInterval(flipTick,1000);
-}
-function flipTick(){
-  flipSt.timeLeft--;const el=document.getElementById('flipTimer');if(!el){clearInterval(flipSt.timer);return;}
-  const m=Math.floor(flipSt.timeLeft/60),s=flipSt.timeLeft%60;el.textContent=`⏱ ${m}:${s<10?'0':''}${s}`;
-  if(flipSt.timeLeft<=30)el.classList.add('warn');if(flipSt.timeLeft<=0){clearInterval(flipSt.timer);flipTimeUp();}
-}
-function flipTimeUp(){
-  flipSt.cards.forEach((_,i)=>{const fc=document.getElementById('fc'+i);if(fc&&!fc.classList.contains('matched'))fc.classList.add('flipped');});
-  const fb=document.getElementById('flipFb');if(fb){fb.className='fb no';fb.textContent='⏰ 時間到！沒關係，繼續下一關。';}
-  setTimeout(()=>goto(9),2200);
-}
-function flipCard(i){
-  if(flipSt.locked)return;const fc=document.getElementById('fc'+i);
-  if(!fc||fc.classList.contains('matched')||fc.classList.contains('flipped'))return;
-  fc.classList.add('flipped');flipSt.flipped.push(i);
-  if(flipSt.flipped.length===2){
-    flipSt.locked=true;const[a,b]=flipSt.flipped;const ca=flipSt.cards[a],cb=flipSt.cards[b];
-    if(ca.pairId===cb.pairId&&ca.type!==cb.type){
-      setTimeout(()=>{
-        [document.getElementById('fc'+a),document.getElementById('fc'+b)].forEach(el=>el&&el.classList.add('matched'));
-        flipSt.matched++;gain(ca.cat);document.getElementById('matchedCount').textContent=flipSt.matched;
-        const fact=document.getElementById('flipFactoid');if(fact){fact.style.display='block';fact.textContent=ca.factoid;}
-        flipSt.flipped=[];flipSt.locked=false;
-        if(flipSt.matched>=flipPairs.length){clearInterval(flipSt.timer);const fb=document.getElementById('flipFb');if(fb){fb.className='fb ok';fb.innerHTML='🎉 全部配對完成！加分完畢，進入最後一關！';}setTimeout(()=>goto(9),1800);}
-      },500);
-    }else{
-      setTimeout(()=>{
-        [document.getElementById('fc'+a),document.getElementById('fc'+b)].forEach(el=>el&&el.classList.remove('flipped'));
-        flipSt.flipped=[];flipSt.locked=false;lose(ca.cat);
-        const fb=document.getElementById('flipFb');if(fb){fb.className='fb no';fb.textContent='❌ 不是一對，扣 5 分，再試試！';}
-      },900);
-    }
-  }
-}
-let tlSel=null,tlPlaced=0,tlPool=[];
-function lvlTimeline(){
-  tlSel=null;tlPlaced=0;tlPool=[...timelineEvents].sort(()=>Math.random()-0.5);
-  let poolHtml='',slotsHtml='';
-  tlPool.forEach((e,i)=>{poolHtml+=`<div class="tl-card" id="tlc${i}" onclick="selectTlCard(${i})">${e.text}</div>`;});
-  timelineEvents.forEach((e,si)=>{slotsHtml+=`<div class="tl-slot" id="tls${si}" onclick="placeInSlot(${si})">${e.year} 年</div>`;});
-  show(`<span class="scene-tag">關卡 10 / 10 · 新挑戰</span><h2>📅 海洋大事時間軸</h2><p class="sub">先點選左邊的事件，再點右邊正確的年份欄位，把大事排到時間軸上！</p><div class="tl-wrap"><div class="tl-pool">${poolHtml}</div><div class="tl-slots">${slotsHtml}</div></div><div class="fb" id="tlFb"></div><div class="center hide" id="tlFinish"><button class="btn" onclick="finish()">完成闖關 🏅</button></div>`);
-}
-function selectTlCard(origIdx){
-  if(document.getElementById('tlc'+origIdx)?.classList.contains('used'))return;
-  tlSel=origIdx;document.querySelectorAll('.tl-card').forEach(c=>c.classList.remove('selected'));document.getElementById('tlc'+origIdx)?.classList.add('selected');
-}
-function placeInSlot(slotIdx){
-  const fb=document.getElementById('tlFb');if(document.getElementById('tls'+slotIdx)?.classList.contains('filled'))return;
-  if(tlSel===null){fb.className='fb no';fb.textContent='👈 先點左邊選一個事件！';return;}
-  const card=tlPool[tlSel];const slot=timelineEvents[slotIdx];
-  if(card.year===slot.year){
-    const slotEl=document.getElementById('tls'+slotIdx);if(slotEl){slotEl.classList.add('filled');slotEl.textContent=card.text;}
-    const cardEl=document.getElementById('tlc'+tlSel);if(cardEl){cardEl.classList.add('used');cardEl.classList.remove('selected');}
-    tlPlaced++;tlSel=null;gain('conservation');fb.className='fb ok';fb.textContent='✅ 放對了！(+10)';
-    if(tlPlaced>=timelineEvents.length){fb.innerHTML='🎉 時間軸排列完成！你對海洋大事掌握得很清楚！';document.getElementById('tlFinish').classList.remove('hide');}
-  }else{
-    const slotEl=document.getElementById('tls'+slotIdx);slotEl?.classList.add('wrong-slot');setTimeout(()=>slotEl?.classList.remove('wrong-slot'),400);
-    lose('conservation');fb.className='fb no';fb.textContent='❌ 年份不對，扣 5 分，再試試！';
-  }
-}
-function saveScore(){
-  const entry={name:state.playerName,cls:state.playerClass,pts:state.points,correct:state.correct,wrong:state.wrong,ts:Date.now()};
-  let all=[];try{all=JSON.parse(localStorage.getItem(LS_KEY)||'[]');}catch(e){}
-  all.push(entry);all.sort((a,b)=>b.pts-a.pts);if(all.length>50)all=all.slice(0,50);
-  localStorage.setItem(LS_KEY,JSON.stringify(all));return all;
-}
-function renderLb(all){
-  if(!all||!all.length)return'<p class="sub">尚無紀錄</p>';const top=all.slice(0,20);let rows='';
-  top.forEach((e,i)=>{const isMe=(e.name===state.playerName&&e.cls===state.playerClass&&e.pts===state.points);rows+=`<tr class="${isMe?'me':''}"><td>${i+1}</td><td>${e.cls}</td><td>${e.name}</td><td>${e.pts}</td><td>✅${e.correct} ❌${e.wrong}</td></tr>`;});
-  return`<table class="lb-table"><tr><th>名次</th><th>班級</th><th>姓名</th><th>分數</th><th>作答</th></tr>${rows}</table>`;
-}
-function clearLb(){if(confirm('確定要清除排行榜嗎？此動作無法還原。')){localStorage.removeItem(LS_KEY);document.getElementById('lbSection').innerHTML='<p class="sub">排行榜已清除。</p>';}}
-function getTitle(pts){if(pts>=340)return'🏆 海洋守護大師';if(pts>=260)return'🥇 海洋守護高手';if(pts>=180)return'🥈 見習海洋守護者';if(pts>=100)return'🥉 海洋小勇士';return'🌱 努力中的海洋新手';}
-function getAdvice(){
-  const wc=state.wrongCats;const worst=Object.entries(wc).sort((a,b)=>b[1]-a[1])[0];
-  if(!worst||worst[1]===0)return'你表現得非常棒！繼續守護我們的海洋！🌊';
-  const m={pollution:'你在<b>海洋污染</b>相關題目需要加強！建議多了解塑膠垃圾與微塑膠的危害，從自備購物袋、水壺做起。',climate:'你在<b>氣候變遷與珊瑚</b>相關題目需要加強！建議了解暖化如何影響海洋，並思考日常節能減碳的方法。',conservation:'你在<b>海洋保育</b>相關題目需要加強！建議多了解公海條約、海洋保護區的意義，以及我們如何支持保育行動。',geology:'你在<b>海洋地質</b>相關題目需要加強！建議多認識火山、岩石風化和野柳地景的形成故事。'};
-  return m[worst[0]]||'繼續加油！';
-}
-function finish(){
+  const btn=document.getElementById('finishBtn'),hint=document.getElementById('vowHint');
+  if(btn){const ok=(n>0&&vow.length>0);btn.disabled=!ok;if(hint)hint.classList.toggle('hide',ok);}}
+
+function saveScore(){const entry={name:state.playerName,pts:state.points,correct:state.correct,wrong:state.wrong,ts:Date.now()};
+  try{const all=JSON.parse(localStorage.getItem(LS_KEY)||'[]');all.push(entry);all.sort((a,b)=>b.pts-a.pts);
+    localStorage.setItem(LS_KEY,JSON.stringify(all.slice(0,50)));}catch(e){}}
+// 老師專用：在瀏覽器 Console 輸入 clearLb() 即可清除排行榜
+function clearLb(){try{localStorage.removeItem(LS_KEY);alert('排行榜已清除');}catch(e){}}
+function getAdvice(){const cats=state.wrongCats;
+  const max=Math.max(cats.pollution,cats.climate,cats.conservation,cats.geology);
+  if(max===0)return '你對所有主題都掌握得很好！繼續支持海洋保育！🎉';
+  if(cats.pollution>=max)return '建議多了解<b>海洋污染</b>：微塑膠如何進入食物鏈，以及個人如何減塑行動。';
+  if(cats.climate>=max)return '建議多關注<b>氣候變遷</b>對海洋的影響：珊瑚白化與海洋熱浪的成因。';
+  if(cats.conservation>=max)return '建議多研究<b>海洋保育行動</b>：《公海條約》的意義與日常中可做的事。';
+  return '建議多欣賞<b>地質地景</b>的奧妙：野柳各種地形的形成原因。';}
+function renderLb(all){if(!all||!all.length)return '<p class="sub" style="text-align:center;margin-top:10px">還沒有其他紀錄</p>';
+  let rows=all.slice(0,10).map((e,i)=>{const isMe=(e.name===state.playerName&&e.ts&&(Date.now()-e.ts)<8000);
+    const medal=i===0?'🥇':i===1?'🥈':i===2?'🥉':'';
+    return `<tr${isMe?' class="me"':''}><td>${medal||i+1}</td><td>${e.name}</td><td>${e.pts}</td><td>${e.correct}✅ ${e.wrong}❌</td></tr>`;}).join('');
+  return `<table class="lb-table"><thead><tr><th>名次</th><th>姓名</th><th>分數</th><th>作答</th></tr></thead><tbody>${rows}</tbody></table>`;}
+function finish(){if(flipTimer)clearInterval(flipTimer);
   state.points+=10;updateScore();renderProgress();
   document.querySelectorAll('#progress .dot').forEach(d=>d.classList.add('done'));
-  const pts=state.points;const title=getTitle(pts);const advice=getAdvice();const all=saveScore();
-  const myRank=all.findIndex(e=>e.name===state.playerName&&e.cls===state.playerClass&&e.pts===pts)+1;
-  const emoji=title.split(' ')[0];const titleText=title.replace(/^[^\s]+\s/,'');
-  stage().innerHTML=`<div class="card final" style="color:var(--ink)"><div class="badge">${emoji}</div><h2 style="color:var(--mid)">${titleText}</h2><div class="scorecard"><div class="bignum">${pts}<span> 分</span></div><div class="qa">✅ 答對 ${state.correct} 題　｜　❌ 答錯 ${state.wrong} 題</div><div class="note2">全班排名第 ${myRank} 名 🎉</div></div><div class="advice-box"><b>🌊 給你的護海建議：</b><br>${advice}</div><p class="sub" style="margin-top:14px">你學會了 ——<br>🪨 大自然的改變：慢、不可逆，我們珍惜<br>🐠 人類的改變：快、可逆，我們<b>能行動</b><br>🔄 海與岩是同一個地球的循環<br>🌱 永續，就是分辨清楚並付出行動</p><h3 style="color:var(--mid);margin:16px 0 4px">🏅 全班排行榜（前 20 名）</h3><div id="lbSection">${renderLb(all)}</div><div class="center" style="margin-top:8px"><button class="btn ghost" style="font-size:13px" onclick="clearLb()">🗑️ 清除排行榜</button></div><div class="center" style="margin-top:14px"><button class="btn" onclick="window.print()">🖨️ 列印 / 存成 PDF</button><button class="btn ghost" onclick="resetGame()">🔁 再玩一次</button></div></div>`;
-}
-const stages=[lvlReadQuiz,lvlOceanTower,lvlCoral,lvlRockTower,lvlLandform,lvl2,lvl3,lvl4,lvlFlipCard,lvlTimeline];
-function goto(step){if(step===-1){resetGame();return;}state.step=step;renderProgress();stages[step]();window.scrollTo({top:0,behavior:'smooth'});}
-function resetGame(){clearInterval(flipSt&&flipSt.timer);state={playerName:'',playerClass:'',step:0,points:0,correct:0,wrong:0,sortIdx:0,cycleNext:0,readQuizDone:new Set(),wrongCats:{pollution:0,climate:0,conservation:0,geology:0}};loginScreen();window.scrollTo({top:0,behavior:'smooth'});}
-function makeBubbles(){for(let i=0;i<14;i++){const b=document.createElement('div');b.className='bubble';const s=6+Math.random()*22;b.style.width=s+'px';b.style.height=s+'px';b.style.left=Math.random()*100+'vw';b.style.animationDuration=(8+Math.random()*10)+'s';b.style.animationDelay=(Math.random()*8)+'s';document.body.appendChild(b);}}
-makeBubbles();loginScreen();
+  saveScore();let all=[];try{all=JSON.parse(localStorage.getItem(LS_KEY)||'[]');}catch(e){}
+  const pts=state.points;let badge,title,note;
+  if(pts>=280){badge='🏆';title='海洋守護者大師！';note='幾乎全對，你超級厲害！';}
+  else if(pts>=210){badge='🥇';title='海洋守護者高手！';note='表現很棒，再挑戰看看能不能拿大師！';}
+  else if(pts>=140){badge='🥈';title='見習海洋守護者';note='不錯！再玩一次，挑戰更高分。';}
+  else{badge='🌱';title='努力中的小海星';note='別灰心，再看一次說明就會更厲害！';}
+  stageEl().innerHTML=`<div class="card final">
+    <div class="badge">${badge}</div><h2 style="color:var(--mid)">${title}</h2>
+    <div class="scorecard"><div class="bignum">${pts}<span> 分</span></div>
+      <div class="qa">✅ 答對 ${state.correct} 題　｜　❌ 答錯 ${state.wrong} 題</div>
+      <div class="note2">${note}</div></div>
+    <div class="advice"><h4>🌊 給 ${state.playerName} 的護海建議</h4><p>${getAdvice()}</p></div>
+    <h3 style="color:var(--mid);margin:14px 0 6px">🏆 全班排行榜</h3>${renderLb(all)}
+    <p class="sub" style="margin-top:14px">你學會了——<br>
+    🪨 大自然的改變：慢、不可逆，我們珍惜<br>
+    🐠 人類的改變：快、可逆，我們<b>能行動</b><br>
+    🔄 海與岩是同一個地球的循環<br>
+    🌱 永續，就是分辨清楚並付出行動</p>
+    <div class="center">
+      <button class="btn" onclick="window.print()">🖨️ 列印 / 存成 PDF</button>
+      <button class="btn ghost" onclick="replayGame()">🔁 再玩一次</button>
+    </div></div>`;}
+function replayGame(){if(flipTimer)clearInterval(flipTimer);
+  state={playerName:'',step:0,points:0,correct:0,wrong:0,sortIdx:0,cycleNext:0,
+    wrongCats:{pollution:0,climate:0,conservation:0,geology:0}};
+  renderProgress();updateScore();loginScreen();window.scrollTo({top:0,behavior:'smooth'});}
+
+const stages=[lvlReadQuiz,lvlOceanTower,lvlCoral,lvlRockTower,lvlLandform,lvl2,lvl3,lvlFlipCard,lvlNewsQuiz,lvl4];
+function goto(step){if(flipTimer&&step!==7)clearInterval(flipTimer);
+  state.step=step;renderProgress();stages[step]();window.scrollTo({top:0,behavior:'smooth'});}
+
+function makeBubbles(){for(let i=0;i<14;i++){const b=document.createElement('div');b.className='bubble';
+  const s=6+Math.random()*22;b.style.width=s+'px';b.style.height=s+'px';
+  b.style.left=Math.random()*100+'vw';b.style.animationDuration=(8+Math.random()*10)+'s';
+  b.style.animationDelay=(Math.random()*8)+'s';document.body.appendChild(b);}}
+
+renderProgress();updateScore();loginScreen();makeBubbles();
 </script>
 </body>
 </html>
