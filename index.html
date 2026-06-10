@@ -553,8 +553,8 @@ function turtleLoop(){
   if(!game){endTurtle();return;}
   const W=game.offsetWidth,H=game.offsetHeight;
   if(ttState.moving!==0){
-    ttState.x=Math.max(4,Math.min(96,ttState.x+ttState.moving*2.2*ttState.speed));
-    const t=document.getElementById('tTurtle');if(t)t.style.left=ttState.x+'%';}
+    ttState.x=Math.max(6,Math.min(94,ttState.x+ttState.moving*2.2*ttState.speed));
+    const t=document.getElementById('tTurtle');if(t){t.style.left=ttState.x+'%';t.style.transform='translateX(-50%)';}
   ttState.spawnCool--;
   if(ttState.spawnCool<=0){
     ttState.spawnCool=Math.round(24/ttState.speed);
@@ -585,8 +585,8 @@ function turtleLoop(){
 function turtleTiltHandler(e){
   if(!ttState||ttState.gameOver)return;
   const g=e.gamma||0;
-  ttState.x=Math.max(4,Math.min(96,50+g*0.85));
-  const t=document.getElementById('tTurtle');if(t)t.style.left=ttState.x+'%';}
+  ttState.x=Math.max(6,Math.min(94,50+g*0.85));
+  const t=document.getElementById('tTurtle');if(t){t.style.left=ttState.x+'%';t.style.transform='translateX(-50%)';}
 
 function endTurtle(){
   if(!ttState||ttState.gameOver)return;
