@@ -335,25 +335,41 @@ function lvlOceanTower(){state.ocean=6;
   let blocks='';for(let i=0;i<6;i++)blocks+=`<div class="block ocean" id="o${i}" onclick="pullOcean(${i})">${oTxt[i]}</div>`;
   show(`<span class="scene-tag">關卡 2 / 10 · 海洋篇</span><h2>🎲 海洋抽抽樂</h2>
     <p class="sub">點積木把它「抽掉」，看看<b>人類的破壞</b>讓海洋多快崩潰！</p>
-    <div class="towers"><div class="tower onecol"><h3>🐠 浮潛的海洋</h3>
-      <div class="crown" id="reef">🐠🐠🐠</div><div class="neck" id="reefn">生機勃勃</div>
-      <div class="stack">${blocks}</div><div class="meter" id="ometer">人為破壞中…</div>
+    <div style="position:relative;border-radius:14px;overflow:hidden;margin:6px 0 2px;">
+      <img id="oceanImg" src="./img-plastic.jpg" onerror="this.style.display='none'"
+        style="width:100%;display:block;max-height:190px;object-fit:cover;transition:filter .7s;">
+      <div id="oceanOverlay" style="position:absolute;inset:0;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;gap:4px;background:rgba(0,0,0,0);
+        transition:background .7s;border-radius:14px;">
+        <span id="oceanEmoji" style="font-size:30px;text-shadow:0 2px 8px rgba(0,0,0,.7);">🐠🐠🐠</span>
+        <span id="oceanLabel" style="font-size:13px;font-weight:bold;color:#fff;
+          background:rgba(0,0,0,.4);padding:3px 12px;border-radius:20px;">生機勃勃</span>
+      </div>
+    </div>
+    <div class="towers"><div class="tower onecol">
+      <div class="stack">${blocks}</div>
+      <div class="meter" id="ometer">人為破壞中…</div>
     </div></div><div id="otResult"></div>`);}
 function pullOcean(i){const b=document.getElementById('o'+i);if(b.classList.contains('gone'))return;
-  b.classList.add('gone');state.ocean--;
-  const reef=document.getElementById('reef'),rn=document.getElementById('reefn'),left=state.ocean;
-  reef.textContent='🐠'.repeat(Math.max(left-2,0))||'🌫️';
-  const sts=['生機勃勃','寄居蟹找不到貝殼','海龜被垃圾纏住','珊瑚變白、生物逃走','只剩塑膠微粒漂浮','一片死寂'];
-  rn.textContent='短短幾十年… '+sts[Math.min(6-left,5)];
+  b.classList.add('gone');state.ocean--;const left=state.ocean,si=Math.min(6-left,5);
+  const filters=['none','saturate(.75) hue-rotate(15deg)','saturate(.45) hue-rotate(25deg) brightness(.9)',
+    'saturate(.2) sepia(.4) brightness(.8)','grayscale(.65) sepia(.5) brightness(.7)','grayscale(1) sepia(.7) brightness(.5)'];
+  const emojis=['🐠🐠🐠','🐠🐠 🎣','🐠 🛍️','😢 🪸','🌫️ 🧴','💀'];
+  const labels=['生機勃勃','寄居蟹找不到貝殼','海龜被垃圾纏住','珊瑚變白生物逃走','只剩塑膠微粒漂浮','一片死寂'];
+  const darken=[0,.1,.22,.37,.52,.68];
+  const img=document.getElementById('oceanImg');if(img)img.style.filter=filters[si];
+  const ov=document.getElementById('oceanOverlay');if(ov)ov.style.background=`rgba(20,8,0,${darken[si]})`;
+  const emo=document.getElementById('oceanEmoji');if(emo)emo.textContent=emojis[si];
+  const lbl=document.getElementById('oceanLabel');if(lbl)lbl.textContent=labels[si];
   document.getElementById('ometer').textContent=`已破壞 ${6-left} 層（超快，數十年）`;
-  if(state.ocean<=0){reef.textContent='🌫️';rn.textContent='生態系崩潰…';
-    document.getElementById('otResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 海洋的崩壞是<b>人類</b>造成的，速度<b>超快</b>——但我們<b>可以阻止它！</b></p>
-    <div class="center"><button class="btn blue" onclick="goto(2)">下一關 →</button></div>`;}}
+  if(state.ocean<=0){
+    document.getElementById('otResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 海洋的崩壞是<b>人類</b>造成的，速度<b>超快</b>（幾十年）——但我們<b>可以阻止它！</b></p>
+    <div class="center"><button class="btn blue" onclick="goto(2)">下一關 →</button></div>`;}
 
 function lvlCoral(){
   show(`<span class="scene-tag">關卡 3 / 10 · 海洋篇</span><h2>🌡️ 珊瑚白化實驗室</h2>
     <p class="sub">拖動溫度計，看看海水升溫時珊瑚會發生什麼事！</p>
-    <div class="coralbox"><div class="coral" id="coralFace">🪸</div>
+    <div class="coralbox"><img id="coralFace" src="./img-coral.jpg" onerror="this.style.display='none'" style="width:100%;border-radius:12px;max-height:180px;object-fit:cover;transition:filter .5s;">
       <div class="coralstat" id="coralStat">健康的珊瑚，住著好多小魚 🐠🐠🐠</div></div>
     <input type="range" min="26" max="32" step="1" value="26" id="tempR" class="tempslider" oninput="updCoral(this.value)">
     <div class="templabel"><span>26°C 涼爽</span><span id="tempNow" class="tempnow">26°C</span><span>32°C 過熱</span></div>
@@ -378,18 +394,35 @@ function lvlRockTower(){state.rock=6;let blocks='';
   for(let i=0;i<6;i++)blocks+=`<div class="block rock" id="r${i}" onclick="pullRock(${i})">岩層</div>`;
   show(`<span class="scene-tag">關卡 4 / 10 · 野柳篇</span><h2>🎲 野柳抽抽樂</h2>
     <p class="sub">女王頭是<b>風化作用</b>慢慢雕出來的。點積木代表岩石被一點點風化！</p>
-    <div class="towers"><div class="tower onecol"><h3>🪨 野柳女王頭</h3>
-      <div class="crown" id="crown">👸</div><div class="neck" id="neck">脖子粗粗的</div>
-      <div class="stack">${blocks}</div><div class="meter" id="rmeter">自然風化中…</div>
+    <div style="position:relative;border-radius:14px;overflow:hidden;margin:6px 0 2px;">
+      <img id="yehliuImg" src="./img-yehliu.jpg" onerror="this.style.display='none'"
+        style="width:100%;display:block;max-height:190px;object-fit:cover;transition:filter .7s,transform .7s;">
+      <div id="yehliuOverlay" style="position:absolute;inset:0;display:flex;flex-direction:column;
+        align-items:center;justify-content:center;gap:4px;background:rgba(0,0,0,0);
+        transition:background .7s;border-radius:14px;">
+        <span id="yehliuEmoji" style="font-size:36px;text-shadow:0 2px 8px rgba(0,0,0,.6);">👸</span>
+        <span id="yehliuLabel" style="font-size:13px;font-weight:bold;color:#fff;
+          background:rgba(0,0,0,.4);padding:3px 12px;border-radius:20px;">脖子粗粗的</span>
+      </div>
+    </div>
+    <div class="towers"><div class="tower onecol">
+      <div class="stack">${blocks}</div>
+      <div class="meter" id="rmeter">自然風化中…</div>
     </div></div><div id="rtResult"></div>`);}
 function pullRock(i){const b=document.getElementById('r'+i);if(b.classList.contains('gone'))return;
-  b.classList.add('gone');state.rock--;
-  const crown=document.getElementById('crown'),neck=document.getElementById('neck'),m=6-state.rock;
-  const necks=['脖子粗粗的','慢慢變細…','更細了…','好細好細…','快撐不住…','搖搖欲墜…'];
-  neck.textContent='經過數百萬年… '+necks[Math.min(m,5)];
-  crown.style.transform=`scaleX(${1-m*0.12})`;
+  b.classList.add('gone');state.rock--;const m=6-state.rock;
+  const rFilters=['none','sepia(.15) brightness(.98)','sepia(.3) brightness(.95) blur(.5px)',
+    'sepia(.5) brightness(.88) blur(1px)','sepia(.65) brightness(.82) blur(1.8px)','sepia(.8) brightness(.75) blur(2.5px)'];
+  const rEmojis=['👸','👸','😰','😨','😱','💔'];
+  const rLabels=['脖子粗粗的','慢慢變細…','更細了…','好細好細…','快撐不住…','搖搖欲墜…'];
+  const rDarken=[0,.05,.12,.2,.3,.42];
+  const img=document.getElementById('yehliuImg');
+  if(img){img.style.filter=rFilters[Math.min(m,5)];img.style.transform=`scaleX(${1-m*0.025})`;}
+  const ov=document.getElementById('yehliuOverlay');if(ov)ov.style.background=`rgba(60,30,0,${rDarken[Math.min(m,5)]})`;
+  const emo=document.getElementById('yehliuEmoji');if(emo)emo.textContent=rEmojis[Math.min(m,5)];
+  const lbl=document.getElementById('yehliuLabel');if(lbl)lbl.textContent='經過數百萬年… '+rLabels[Math.min(m,5)];
   document.getElementById('rmeter').textContent=`已風化 ${m} 層（極慢，千萬年）`;
-  if(state.rock<=0){crown.textContent='💔';neck.textContent='女王頭斷了…';
+  if(state.rock<=0){
     document.getElementById('rtResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 女王頭的改變是<b>大自然</b>造成的，速度<b>極慢</b>（千萬年），無法挽回——我們只能珍惜。</p>
     <div class="center"><button class="btn blue" onclick="goto(4)">下一關 →</button></div>`;}}
 
