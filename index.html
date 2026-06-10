@@ -586,7 +586,7 @@ function turtleTiltHandler(e){
   if(!ttState||ttState.gameOver)return;
   const g=e.gamma||0;
   ttState.x=Math.max(6,Math.min(94,50+g*0.85));
-  const t=document.getElementById('tTurtle');if(t){t.style.left=ttState.x+'%';t.style.transform='translateX(-50%)';}
+  const t=document.getElementById('tTurtle');if(t){t.style.left=ttState.x+'%';t.style.transform='translateX(-50%)';}}
 
 function endTurtle(){
   if(!ttState||ttState.gameOver)return;
