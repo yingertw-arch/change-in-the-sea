@@ -183,7 +183,6 @@
     <span id="scoreFlash" class="scoreflash"></span>
   </div>
   <div id="stage"></div>
-  <div class="note">海山國小 · 永續發展教案 · 連結「野柳女王頭」與「浮潛海洋生態」</div>
 </div>
 <script>
 const LS_KEY='seaGame_v2';
@@ -365,7 +364,7 @@ function pullOcean(i){const b=document.getElementById('o'+i);if(b.classList.cont
   document.getElementById('ometer').textContent=`已破壞 ${6-left} 層（超快，數十年）`;
   if(state.ocean<=0){
     document.getElementById('otResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 海洋的崩壞是<b>人類</b>造成的，速度<b>超快</b>（幾十年）——但我們<b>可以阻止它！</b></p>
-    <div class="center"><button class="btn blue" onclick="goto(2)">下一關 →</button></div>`;}
+    <div class="center"><button class="btn blue" onclick="goto(2)">下一關 →</button></div>`;}}
 
 function lvlCoral(){
   show(`<span class="scene-tag">關卡 3 / 10 · 海洋篇</span><h2>🌡️ 珊瑚白化實驗室</h2>
