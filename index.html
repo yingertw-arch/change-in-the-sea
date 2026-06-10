@@ -233,7 +233,7 @@ const sortCards=[
   {t:"豆腐岩沿著天然裂縫被海水切割成方塊",a:"nat"},
   {t:"漁船過度捕撈，海裡的魚越來越少",a:"hum"},
   {t:"寄居蟹找不到貝殼，只好拿塑膠垃圾當家",a:"hum"},
-  {t:"海浪帶著小石頭在岩石上打轉，磨出一個個壺穴",a:"nat"},
+  {t:"工廠將廢水排入河川，最終流入大海污染海洋",a:"hum"},
 ];
 const cycleAnswer=["🐠 海裡的生命","⬇️ 死亡後沉到海底","🪨 沉積變成岩石","🌊 被海水侵蝕風化","🐠 養分回到海洋"];
 const cyclePool=["🪨 沉積變成岩石","🐠 海裡的生命","🌊 被海水侵蝕風化","🐠 養分回到海洋","⬇️ 死亡後沉到海底"];
@@ -247,7 +247,7 @@ const flipPairs=[
   ['珊瑚白化','海水升溫'],
   ['女王頭變細','長期風化侵蝕'],
   ['微塑膠','混入食物鏈'],
-  ['壺穴形成','海浪夾石旋磨'],
+  ['東加海底火山爆發','引發全球海嘯'],
   ['洋流','傳播海洋垃圾'],
   ['過度捕撈','魚類數量減少'],
 ];
@@ -460,6 +460,9 @@ function pullRock(i){const b=document.getElementById('r'+i);if(b.classList.conta
   const lbl=document.getElementById('yehliuLabel');if(lbl)lbl.textContent='經過數百萬年… '+rLabels[Math.min(m,5)];
   document.getElementById('rmeter').textContent=`已風化 ${m} 層（極慢，千萬年）`;
   if(state.rock<=0){
+    const bi=document.getElementById('yehliuImg');
+    if(bi){bi.style.filter='none';bi.style.transform='none';bi.src='./img-yehliu-broken.jpg';}
+    const bov=document.getElementById('yehliuOverlay');if(bov)bov.style.background='rgba(0,0,0,.15)';
     document.getElementById('rtResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 女王頭的改變是<b>大自然</b>造成的，速度<b>極慢</b>（千萬年），無法挽回——我們只能珍惜。</p>
     <div class="center"><button class="btn blue" onclick="goto(4)">下一關 →</button></div>`;}}
 
@@ -486,24 +489,111 @@ function selRight(oi){const fb=document.getElementById('lffb'),cz=document.getEl
   }else{cz.classList.add('shake');setTimeout(()=>cz.classList.remove('shake'),400);
     lose('geology');fb.className='fb no';fb.textContent='❌ 不是這個原因，扣 5 分～';}}
 
-function lvl2(){state.sortIdx=0;renderSort();}
-function renderSort(){
-  if(state.sortIdx>=sortCards.length){show(`<span class="scene-tag">關卡 6 / 10 · 統整</span>
-    <h2>🎯 分類高手！</h2>
-    <p class="sub">🪨 <b>自然的改變</b>＝慢、不可逆　🐠 <b>人為的改變</b>＝快、可阻止！</p>
-    <div class="center"><button class="btn blue" onclick="goto(6)">下一關 →</button></div>`);return;}
-  const c=sortCards[state.sortIdx];
-  show(`<span class="scene-tag">關卡 6 / 10 · 統整 · 第 ${state.sortIdx+1}/${sortCards.length} 題</span>
-    <h2>🗂️ 這是哪一種改變？</h2><div class="cardq">${c.t}</div>
-    <div class="choose">
-      <button class="nb" onclick="ansSort('nat')">🪨 自然的改變<br><small>慢 · 不可逆</small></button>
-      <button class="hb" onclick="ansSort('hum')">🐠 人為的改變<br><small>快 · 可阻止</small></button>
-    </div><div class="fb" id="sfb"></div>`);}
-function ansSort(a){const c=sortCards[state.sortIdx],fb=document.getElementById('sfb');
-  if(a===c.a){gain();fb.className='fb ok';fb.textContent='✅ 答對了！(+10)';
-    setTimeout(()=>{state.sortIdx++;renderSort();},800);
-  }else{lose();fb.className='fb no';
-    fb.textContent=(c.a==='nat'?'❌ 這是大自然慢慢造成的，扣 5 分！':'❌ 這是人類造成的破壞，扣 5 分！');}}
+let ttState=null;
+function lvl2(){
+  if(ttState){clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);ttState=null;}
+  show(`<span class="scene-tag">關卡 6 / 10 · 互動遊戲</span>
+    <h2>🐢 海龜接海草</h2>
+    <p class="sub">大海中漂著各種事件泡泡，操控海龜<b>接住人為破壞因素</b>！</p>
+    <div class="reading-card" style="margin-bottom:14px;">
+      <b>🎮 遊戲規則</b><br><br>
+      🔴 <b>接到人為破壞</b>（人類造成的）→ <b>+8 分</b>，海龜阻止了傷害！<br>
+      🔵 <b>接到自然改變</b>（大自然的）→ <b>-4 分</b>，自然的力量無法阻擋<br>
+      ⏱ 限時 <b>60 秒</b>，速度越來越快！<br>
+      👆 按住 ◀ ▶ 按鈕移動海龜
+    </div>
+    <div class="center"><button class="btn blue" onclick="startTurtle()">開始遊戲 🐢</button></div>`);}
+
+function startTurtle(){
+  if(ttState){clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);}
+  ttState={x:50,moving:0,timeLeft:60,pts:0,speed:1.0,items:[],spawnCool:0,gameOver:false,timerInt:null,gameInt:null};
+  show(`<span class="scene-tag">關卡 6 / 10 · 互動遊戲</span><h2>🐢 海龜接海草</h2>
+    <div id="tGame" style="position:relative;width:100%;height:320px;
+      background:linear-gradient(180deg,#4dc9ed 0%,#168aad 60%,#0a3d62 100%);
+      border-radius:16px;overflow:hidden;margin-bottom:10px;touch-action:none;">
+      <div id="tTurtle" style="position:absolute;bottom:14px;left:50%;
+        transform:translateX(-50%);font-size:46px;user-select:none;line-height:1;">🐢</div>
+      <div style="position:absolute;top:10px;left:12px;">
+        <span id="tTimer" style="background:rgba(0,0,0,.45);color:#fff;font-weight:bold;
+          font-size:15px;padding:4px 12px;border-radius:20px;">⏱ 60s</span></div>
+      <div style="position:absolute;top:10px;right:12px;">
+        <span id="tPts" style="background:rgba(0,0,0,.45);color:#fff;font-weight:bold;
+          font-size:15px;padding:4px 12px;border-radius:20px;">0 分</span></div>
+      <div style="position:absolute;bottom:68px;left:50%;transform:translateX(-50%);
+        display:flex;gap:8px;white-space:nowrap;">
+        <span style="background:rgba(220,70,50,.85);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;">🔴 人為=接</span>
+        <span style="background:rgba(30,130,200,.85);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;">🔵 自然=閃</span>
+      </div>
+    </div>
+    <div style="display:flex;gap:14px;justify-content:center;margin-bottom:6px;">
+      <button class="btn" style="font-size:28px;padding:10px 38px;"
+        onpointerdown="ttState&&(ttState.moving=-1)" onpointerup="ttState&&(ttState.moving=0)"
+        onpointerleave="ttState&&(ttState.moving=0)">◀</button>
+      <button class="btn" style="font-size:28px;padding:10px 38px;"
+        onpointerdown="ttState&&(ttState.moving=1)" onpointerup="ttState&&(ttState.moving=0)"
+        onpointerleave="ttState&&(ttState.moving=0)">▶</button>
+    </div>
+    <div id="tResult"></div>`);
+  ttState.timerInt=setInterval(()=>{
+    if(!ttState||ttState.gameOver)return;
+    ttState.timeLeft--;
+    const el=document.getElementById('tTimer');
+    if(el)el.textContent=`⏱ ${ttState.timeLeft}s`;
+    if(ttState.timeLeft===45||ttState.timeLeft===30||ttState.timeLeft===15)ttState.speed=+(ttState.speed+0.4).toFixed(1);
+    if(ttState.timeLeft<=0)endTurtle();
+  },1000);
+  ttState.gameInt=setInterval(turtleLoop,50);}
+
+function turtleLoop(){
+  if(!ttState||ttState.gameOver)return;
+  const game=document.getElementById('tGame');
+  if(!game){endTurtle();return;}
+  const W=game.offsetWidth,H=game.offsetHeight;
+  if(ttState.moving!==0){
+    ttState.x=Math.max(6,Math.min(94,ttState.x+ttState.moving*2.0*ttState.speed));
+    const t=document.getElementById('tTurtle');if(t)t.style.left=ttState.x+'%';}
+  ttState.spawnCool--;
+  if(ttState.spawnCool<=0){
+    ttState.spawnCool=Math.round(38/ttState.speed);
+    const pool=[...sortCards,...sortCards.filter(c=>c.a==='hum')];
+    const item=pool[Math.floor(Math.random()*pool.length)];
+    const x=8+Math.random()*84,id='ti'+Date.now()+Math.random().toString(36).slice(2,5);
+    const el=document.createElement('div');el.id=id;
+    el.style.cssText=`position:absolute;left:${x}%;top:-55px;transform:translateX(-50%);
+      background:${item.a==='hum'?'rgba(210,60,40,.92)':'rgba(25,120,190,.92)'};
+      color:#fff;font-weight:bold;font-size:11px;padding:5px 10px;border-radius:16px;
+      max-width:108px;text-align:center;line-height:1.4;box-shadow:0 2px 6px rgba(0,0,0,.3);`;
+    el.textContent=item.t;game.appendChild(el);
+    ttState.items.push({id,x,y:-55,a:item.a});}
+  const tX=ttState.x/100*W,tY=H-14-22;
+  ttState.items=ttState.items.filter(item=>{
+    item.y+=2.8*ttState.speed;
+    const el=document.getElementById(item.id);if(!el)return false;
+    el.style.top=item.y+'px';
+    const iX=item.x/100*W,iY=item.y+15;
+    if(Math.abs(iX-tX)<54&&Math.abs(iY-tY)<38){
+      el.remove();
+      ttState.pts=Math.max(0,item.a==='hum'?ttState.pts+8:ttState.pts-4);
+      const pe=document.getElementById('tPts');if(pe)pe.textContent=ttState.pts+' 分';
+      return false;}
+    if(item.y>H+10){el.remove();return false;}
+    return true;});}
+
+function endTurtle(){
+  if(!ttState||ttState.gameOver)return;
+  ttState.gameOver=true;
+  clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);
+  document.querySelectorAll('[id^="ti"]').forEach(e=>e.remove());
+  const pts=ttState.pts;
+  state.points+=Math.min(pts,80);updateScore();
+  const r=document.getElementById('tResult');
+  if(r)r.innerHTML=`<div class="reading-card" style="text-align:center;">
+    <div style="font-size:40px;margin-bottom:6px;">🐢</div>
+    <h3>遊戲結束！獲得 <b style="color:var(--coral)">${pts} 分</b></h3>
+    <p style="font-size:13px;color:#5a6b7b;margin-top:8px;">
+      🔴 紅色 = 人為破壞，接到代表你阻止了傷害<br>🔵 藍色 = 自然改變，接到要扣分</p>
+    </div>
+    <div class="center"><button class="btn blue" onclick="goto(6)">下一關 →</button></div>`;}
 
 function lvl3(){state.cycleNext=0;let slots='',chips='';
   for(let i=0;i<cycleAnswer.length;i++)
@@ -648,7 +738,6 @@ function finish(){if(flipTimer)clearInterval(flipTimer);
       <div class="qa">✅ 答對 ${state.correct} 題　｜　❌ 答錯 ${state.wrong} 題</div>
       <div class="note2">${note}</div></div>
     <div class="advice"><h4>🌊 給 ${state.playerName} 的護海建議</h4><p>${getAdvice()}</p></div>
-    <h3 style="color:var(--mid);margin:14px 0 6px">🏆 全班排行榜</h3>${renderLb(all)}
     <p class="sub" style="margin-top:14px">你學會了——<br>
     🪨 大自然的改變：慢、不可逆，我們珍惜<br>
     🐠 人類的改變：快、可逆，我們<b>能行動</b><br>
@@ -664,7 +753,9 @@ function replayGame(){if(flipTimer)clearInterval(flipTimer);
   renderProgress();updateScore();loginScreen();window.scrollTo({top:0,behavior:'smooth'});}
 
 const stages=[lvlReadQuiz,lvlOceanTower,lvlCoral,lvlRockTower,lvlLandform,lvl2,lvl3,lvlFlipCard,lvlNewsQuiz,lvl4];
-function goto(step){if(flipTimer&&step!==7)clearInterval(flipTimer);
+function goto(step){
+  if(flipTimer&&step!==7)clearInterval(flipTimer);
+  if(ttState&&!ttState.gameOver){clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);ttState.gameOver=true;}
   state.step=step;renderProgress();stages[step]();window.scrollTo({top:0,behavior:'smooth'});}
 
 function makeBubbles(){for(let i=0;i<14;i++){const b=document.createElement('div');b.className='bubble';
