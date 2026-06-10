@@ -270,6 +270,7 @@ function show(html){stageEl().innerHTML=`<div class="card">${html}</div>`;}
 
 function loginScreen(){
   stageEl().innerHTML=`<div class="card"><div class="login-box">
+    <img src="./img-hero.jpg" onerror="this.style.display='none'" style="width:100%;border-radius:14px;max-height:180px;object-fit:cover;margin-bottom:12px;">
     <span class="logo">🌊</span><h2>海洋偵探，歡迎！</h2>
     <p class="sub">完成十關闖關，成為海洋守護者！</p>
     <div class="login-field"><label>你的名字</label>
@@ -492,6 +493,7 @@ function lvlFlipCard(){flipFirst=null;flipMatched=new Set();flipLocked=false;fli
   cards.forEach((c,ci)=>{grid+=`<div class="flipcard" id="fc${ci}" data-pi="${c.pi}" data-side="${c.side}" onclick="flipClick(${ci})">
     <div class="flipinner"><div class="flipfront">🌊</div><div class="flipback">${c.txt}</div></div></div>`;});
   show(`<span class="scene-tag">關卡 8 / 10 · 翻牌配對</span><h2>🃏 海洋知識翻翻樂</h2>
+    <img src="./img-flip.jpg" onerror="this.style.display='none'" style="width:100%;border-radius:12px;max-height:140px;object-fit:cover;margin-bottom:8px;">
     <p class="sub">翻開兩張有<b>關聯</b>的卡片配對！限時 <b>2 分鐘</b>，答對 +10，答錯 -5。</p>
     <div class="flip-timer" id="flipTimer">⏱ 剩餘時間：02:00</div>
     <div class="flip-grid">${grid}</div><div class="fb" id="flipFb"></div>
@@ -593,6 +595,7 @@ function finish(){if(flipTimer)clearInterval(flipTimer);
   else if(pts>=140){badge='🥈';title='見習海洋守護者';note='不錯！再玩一次，挑戰更高分。';}
   else{badge='🌱';title='努力中的小海星';note='別灰心，再看一次說明就會更厲害！';}
   stageEl().innerHTML=`<div class="card final">
+    <img src="./img-badge.jpg" onerror="this.style.display='none'" style="width:140px;height:140px;border-radius:50%;object-fit:cover;display:block;margin:0 auto 8px;box-shadow:0 4px 16px rgba(0,0,0,.2);">
     <div class="badge">${badge}</div><h2 style="color:var(--mid)">${title}</h2>
     <div class="scorecard"><div class="bignum">${pts}<span> 分</span></div>
       <div class="qa">✅ 答對 ${state.correct} 題　｜　❌ 答錯 ${state.wrong} 題</div>
