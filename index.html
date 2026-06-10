@@ -554,7 +554,7 @@ function turtleLoop(){
   const W=game.offsetWidth,H=game.offsetHeight;
   if(ttState.moving!==0){
     ttState.x=Math.max(6,Math.min(94,ttState.x+ttState.moving*2.2*ttState.speed));
-    const t=document.getElementById('tTurtle');if(t){t.style.left=ttState.x+'%';t.style.transform='translateX(-50%)';}
+    const t=document.getElementById('tTurtle');if(t){t.style.left=ttState.x+'%';t.style.transform='translateX(-50%)';}}
   ttState.spawnCool--;
   if(ttState.spawnCool<=0){
     ttState.spawnCool=Math.round(24/ttState.speed);
@@ -680,7 +680,7 @@ function lvlNewsQuiz(){
       🐍 海蛇自動移動，用方向鍵或滑動螢幕控制<br>
       ❓ 碰到食物 → 題目出現，遊戲暫停<br>
       🟢 答對 → 海蛇增加一節（越長越好！）<br>
-      🔴 答錯 → 海蛇縮短一節<br>
+      🔴 答錯 → 遊戲立刻結束 💀<br>
       💀 蛇頭碰到自己的身體 → 遊戲結束<br>
       🏆 最終蛇的長度決定這關得分
     </div>
@@ -764,7 +764,8 @@ function snakeDraw(){const s=snakeState;
 function snakeAskQ(){const s=snakeState;
   const q=newsQuizData[s.qIdx%newsQuizData.length];s.qIdx++;
   let opts='';q.opts.forEach((o,oi)=>{
-    opts+=`<button class="qopt" onclick="snakeAns(${oi},${q.a},'${q.cat}','${q.exp.replace(/'/g,"\\'")}')">${o}</button>`;});
+    const expSafe=q.exp.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
+    opts+=`<button class="qopt" onclick="snakeAns(${oi},${q.a},'${q.cat}','${expSafe}')">${o}</button>`;});
   const el=document.getElementById('snakeQ');
   if(el){el.classList.remove('hide');
     el.innerHTML=`<div class="vqq">❓ ${q.q}</div>
