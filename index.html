@@ -521,8 +521,7 @@ function startTurtle(){
           font-size:15px;padding:4px 12px;border-radius:20px;">0 分</span></div>
       <div style="position:absolute;bottom:68px;left:50%;transform:translateX(-50%);
         display:flex;gap:8px;white-space:nowrap;">
-        <span style="background:rgba(220,70,50,.85);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;">🔴 人為=接</span>
-        <span style="background:rgba(30,130,200,.85);color:#fff;font-size:11px;padding:3px 10px;border-radius:10px;">🔵 自然=閃</span>
+        <span style="background:rgba(0,0,0,.45);color:#fff;font-size:12px;padding:4px 14px;border-radius:12px;white-space:nowrap;">🌿 接自然　🚫 閃人為</span>
       </div>
     </div>
     <div style="display:flex;gap:14px;justify-content:center;margin-bottom:6px;">
@@ -533,7 +532,11 @@ function startTurtle(){
         onpointerdown="ttState&&(ttState.moving=1)" onpointerup="ttState&&(ttState.moving=0)"
         onpointerleave="ttState&&(ttState.moving=0)">▶</button>
     </div>
+    <p style="text-align:center;font-size:12px;color:#5a6b7b;margin-bottom:4px;">📱 傾斜平板也可控制海龜方向</p>
     <div id="tResult"></div>`);
+  if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+    DeviceOrientationEvent.requestPermission().then(p=>{if(p==='granted')window.addEventListener('deviceorientation',turtleTiltHandler);}).catch(()=>{});
+  }else{window.addEventListener('deviceorientation',turtleTiltHandler);}
   ttState.timerInt=setInterval(()=>{
     if(!ttState||ttState.gameOver)return;
     ttState.timeLeft--;
@@ -550,39 +553,46 @@ function turtleLoop(){
   if(!game){endTurtle();return;}
   const W=game.offsetWidth,H=game.offsetHeight;
   if(ttState.moving!==0){
-    ttState.x=Math.max(6,Math.min(94,ttState.x+ttState.moving*2.0*ttState.speed));
+    ttState.x=Math.max(4,Math.min(96,ttState.x+ttState.moving*2.2*ttState.speed));
     const t=document.getElementById('tTurtle');if(t)t.style.left=ttState.x+'%';}
   ttState.spawnCool--;
   if(ttState.spawnCool<=0){
-    ttState.spawnCool=Math.round(38/ttState.speed);
-    const pool=[...sortCards,...sortCards.filter(c=>c.a==='hum')];
+    ttState.spawnCool=Math.round(24/ttState.speed);
+    const pool=[...sortCards,...sortCards];
     const item=pool[Math.floor(Math.random()*pool.length)];
     const x=8+Math.random()*84,id='ti'+Date.now()+Math.random().toString(36).slice(2,5);
     const el=document.createElement('div');el.id=id;
     el.style.cssText=`position:absolute;left:${x}%;top:-55px;transform:translateX(-50%);
-      background:${item.a==='hum'?'rgba(210,60,40,.92)':'rgba(25,120,190,.92)'};
+      background:rgba(10,61,98,.88);
       color:#fff;font-weight:bold;font-size:11px;padding:5px 10px;border-radius:16px;
       max-width:108px;text-align:center;line-height:1.4;box-shadow:0 2px 6px rgba(0,0,0,.3);`;
     el.textContent=item.t;game.appendChild(el);
     ttState.items.push({id,x,y:-55,a:item.a});}
   const tX=ttState.x/100*W,tY=H-14-22;
   ttState.items=ttState.items.filter(item=>{
-    item.y+=2.8*ttState.speed;
+    item.y+=5.0*ttState.speed;
     const el=document.getElementById(item.id);if(!el)return false;
     el.style.top=item.y+'px';
     const iX=item.x/100*W,iY=item.y+15;
     if(Math.abs(iX-tX)<54&&Math.abs(iY-tY)<38){
       el.remove();
-      ttState.pts=Math.max(0,item.a==='hum'?ttState.pts+8:ttState.pts-4);
+      ttState.pts=Math.max(0,item.a==='nat'?ttState.pts+8:ttState.pts-4);
       const pe=document.getElementById('tPts');if(pe)pe.textContent=ttState.pts+' 分';
       return false;}
     if(item.y>H+10){el.remove();return false;}
     return true;});}
 
+function turtleTiltHandler(e){
+  if(!ttState||ttState.gameOver)return;
+  const g=e.gamma||0;
+  ttState.x=Math.max(4,Math.min(96,50+g*0.85));
+  const t=document.getElementById('tTurtle');if(t)t.style.left=ttState.x+'%';}
+
 function endTurtle(){
   if(!ttState||ttState.gameOver)return;
   ttState.gameOver=true;
   clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);
+  window.removeEventListener('deviceorientation',turtleTiltHandler);
   document.querySelectorAll('[id^="ti"]').forEach(e=>e.remove());
   const pts=ttState.pts;
   state.points+=Math.min(pts,80);updateScore();
@@ -591,7 +601,7 @@ function endTurtle(){
     <div style="font-size:40px;margin-bottom:6px;">🐢</div>
     <h3>遊戲結束！獲得 <b style="color:var(--coral)">${pts} 分</b></h3>
     <p style="font-size:13px;color:#5a6b7b;margin-top:8px;">
-      🔴 紅色 = 人為破壞，接到代表你阻止了傷害<br>🔵 藍色 = 自然改變，接到要扣分</p>
+      🌿 自然改變 = 接住 (+8)　🚫 人為破壞 = 閃開 (-4)</p>
     </div>
     <div class="center"><button class="btn blue" onclick="goto(6)">下一關 →</button></div>`;}
 
@@ -653,35 +663,140 @@ function flipClick(ci){if(flipLocked)return;
     const fb=document.getElementById('flipFb');fb.className='fb no';fb.textContent='❌ 不是一對，翻回去！(-5)';
     setTimeout(()=>{c1.classList.remove('flipped');card.classList.remove('flipped');flipFirst=null;flipLocked=false;},1000);}}
 
-let nqDone=new Set();
+let snakeState=null;
 function lvlNewsQuiz(){
-  show(`<span class="scene-tag">關卡 9 / 10 · 深度思考</span><h2>🌐 全球新聞大考驗</h2>
-    <p class="sub">先複習一次新聞文本，再來作答！</p>
+  if(snakeState){clearInterval(snakeState.gameInt);if(snakeState._keyHandler)document.removeEventListener('keydown',snakeState._keyHandler);snakeState=null;}
+  show(`<span class="scene-tag">關卡 9 / 10 · 知識海蛇</span><h2>🐍 知識海蛇</h2>
+    <p class="sub">先看完新聞文本，再開始遊戲！</p>
     <div class="reading-card">
       <h3>🗞️ 海洋大事紀</h3>
-      <p>2022年，<span class="hl">東加海底火山</span>爆發，引發海嘯，提醒我們地球內部的力量依然活躍。</p><br>
-      <p>2023年，聯合國通過<span class="hl">《公海條約》</span>，保護不屬於任何國家的公海生態系統，是人類保育史上的重大突破。</p><br>
-      <p>2024年，全球發生<span class="hl">第四次珊瑚礁大白化</span>。科學家指出，<span class="hl">海洋熱浪</span>造成海水溫度異常升高，是珊瑚白化的主因。</p><br>
-      <p>2025年，南極海冰面積創新低，<span class="hl">陸地冰川</span>融化後流入海洋，使全球海平面上升威脅加劇。與此同時，科學家在人類血液中發現<span class="hl">微塑膠</span>，主要來源是透過食物鏈——魚類吃入後，人類再吃魚。</p>
+      <p>2022年，<span class="hl">東加海底火山</span>爆發，引發海嘯，地球內部力量依然活躍。</p><br>
+      <p>2023年，聯合國通過<span class="hl">《公海條約》</span>，保護公海生態，是保育史重大突破。</p><br>
+      <p>2024年，全球<span class="hl">第四次珊瑚礁大白化</span>，<span class="hl">海洋熱浪</span>讓海水升溫是主因。</p><br>
+      <p>2025年，南極海冰創新低，<span class="hl">陸地冰川</span>融化讓海平面上升；人類血液驗出<span class="hl">微塑膠</span>，透過食物鏈進入人體。</p>
     </div>
-    <div class="center"><button class="btn blue" onclick="showNQ()">我讀完了，開始作答 →</button></div>`);}
-function showNQ(){nqDone=new Set();let html='';
-  newsQuizData.forEach((q,qi)=>{let opts='';
-    q.opts.forEach((o,oi)=>{opts+=`<button class="qopt" id="nq${qi}o${oi}" onclick="ansNQ(${qi},${oi})">${o}</button>`;});
-    html+=`<div style="margin-bottom:22px"><div class="vqq">${qi+1}. ${q.q}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${opts}</div>
-      <div class="fb" id="nqfb${qi}"></div></div>`;});
-  show(`<span class="scene-tag">關卡 9 / 10 · 深度思考</span><h2>📝 新聞分析測驗</h2>
-    <p class="sub">根據剛才的文本分析作答。答對 <b>+10</b>，答錯 <b>-5</b>。</p>
-    ${html}
-    <div class="center hide" id="nqNext"><button class="btn" onclick="goto(9)">進入最後一關 🌱 →</button></div>`);}
-function ansNQ(qi,oi){if(nqDone.has(qi))return;
-  const q=newsQuizData[qi],fb=document.getElementById('nqfb'+qi),chosen=document.getElementById('nq'+qi+'o'+oi);
-  if(oi===q.a){nqDone.add(qi);chosen.classList.add('right');gain(q.cat);
-    q.opts.forEach((_,i)=>document.getElementById('nq'+qi+'o'+i).disabled=true);
-    fb.className='fb ok';fb.innerHTML=`✅ 答對！(+10) <span style="font-weight:normal;font-size:13px">💡 ${q.exp}</span>`;
-  }else{chosen.classList.add('wrong');chosen.disabled=true;lose(q.cat);fb.className='fb no';fb.textContent='❌ 再想想！(-5)';}
-  if(nqDone.size===newsQuizData.length)document.getElementById('nqNext').classList.remove('hide');}
+    <div class="reading-card" style="margin-top:10px;">
+      <b>🎮 遊戲規則</b><br><br>
+      🐍 海蛇自動移動，用方向鍵或滑動螢幕控制<br>
+      ❓ 碰到食物 → 題目出現，遊戲暫停<br>
+      🟢 答對 → 海蛇增加一節（越長越好！）<br>
+      🔴 答錯 → 海蛇縮短一節<br>
+      💀 蛇頭碰到自己的身體 → 遊戲結束<br>
+      🏆 最終蛇的長度決定這關得分
+    </div>
+    <div class="center"><button class="btn blue" onclick="startSnake()">開始遊戲 🐍</button></div>`);}
+
+function startSnake(){
+  if(snakeState)clearInterval(snakeState.gameInt);
+  const COLS=18,ROWS=12,CELL=20;
+  snakeState={cols:COLS,rows:ROWS,cell:CELL,
+    body:[{x:9,y:6},{x:8,y:6},{x:7,y:6}],
+    dir:{x:1,y:0},nextDir:{x:1,y:0},
+    food:null,pause:false,gameOver:false,gameInt:null,
+    speed:300,qPool:[...newsQuizData].sort(()=>Math.random()-.5),qIdx:0,
+    correct:0,wrong:0,touchStart:null,_keyHandler:null};
+  snakeSpawnFood();
+  const W=COLS*CELL,H=ROWS*CELL;
+  show(`<span class="scene-tag">關卡 9 / 10 · 知識海蛇</span><h2>🐍 知識海蛇</h2>
+    <div style="position:relative;">
+      <canvas id="snakeC" width="${W}" height="${H}"
+        style="display:block;margin:0 auto;border-radius:12px;max-width:100%;background:#0a3d62;touch-action:none;"></canvas>
+      <div id="snakeLen" style="position:absolute;top:6px;right:10px;background:rgba(0,0,0,.5);
+        color:#fff;font-size:13px;font-weight:bold;padding:3px 10px;border-radius:12px;">長度: 3</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;max-width:200px;margin:10px auto 6px;">
+      <div></div>
+      <button class="btn ghost" style="font-size:20px;padding:6px;" onclick="snakeDir(0,-1)">▲</button>
+      <div></div>
+      <button class="btn ghost" style="font-size:20px;padding:6px;" onclick="snakeDir(-1,0)">◀</button>
+      <button class="btn ghost" style="font-size:20px;padding:6px;" onclick="snakeDir(0,1)">▼</button>
+      <button class="btn ghost" style="font-size:20px;padding:6px;" onclick="snakeDir(1,0)">▶</button>
+    </div>
+    <div id="snakeQ" class="hide" style="margin-top:10px;"></div>
+    <div id="snakeEnd"></div>`);
+  const canvas=document.getElementById('snakeC');
+  canvas.addEventListener('touchstart',e=>{snakeState.touchStart={x:e.touches[0].clientX,y:e.touches[0].clientY};e.preventDefault();},{passive:false});
+  canvas.addEventListener('touchend',e=>{
+    if(!snakeState||!snakeState.touchStart)return;
+    const dx=e.changedTouches[0].clientX-snakeState.touchStart.x,dy=e.changedTouches[0].clientY-snakeState.touchStart.y;
+    if(Math.abs(dx)>Math.abs(dy)){snakeDir(dx>0?1:-1,0);}else{snakeDir(0,dy>0?1:-1);}
+    snakeState.touchStart=null;e.preventDefault();},{passive:false});
+  snakeState._keyHandler=e=>{const m={'ArrowUp':[0,-1],'ArrowDown':[0,1],'ArrowLeft':[-1,0],'ArrowRight':[1,0]};
+    if(m[e.key]){e.preventDefault();snakeDir(...m[e.key]);}};
+  document.addEventListener('keydown',snakeState._keyHandler);
+  snakeState.gameInt=setInterval(snakeTick,snakeState.speed);
+  snakeDraw();}
+
+function snakeSpawnFood(){const s=snakeState;let fx,fy,t=0;
+  do{fx=Math.floor(Math.random()*s.cols);fy=Math.floor(Math.random()*s.rows);t++;}
+  while(s.body.some(b=>b.x===fx&&b.y===fy)&&t<200);
+  s.food={x:fx,y:fy};}
+
+function snakeDir(dx,dy){if(!snakeState||snakeState.pause||snakeState.gameOver)return;
+  const d=snakeState.dir;
+  if(dx!==0&&d.x!==0)return;if(dy!==0&&d.y!==0)return;
+  snakeState.nextDir={x:dx,y:dy};}
+
+function snakeTick(){const s=snakeState;if(!s||s.pause||s.gameOver)return;
+  s.dir={...s.nextDir};
+  const head={x:(s.body[0].x+s.dir.x+s.cols)%s.cols,y:(s.body[0].y+s.dir.y+s.rows)%s.rows};
+  if(s.body.slice(1).some(b=>b.x===head.x&&b.y===head.y)){snakeGameOver();return;}
+  s.body.unshift(head);
+  if(s.food&&head.x===s.food.x&&head.y===s.food.y){
+    s.food=null;s.pause=true;clearInterval(s.gameInt);snakeAskQ();
+  }else{s.body.pop();}
+  snakeDraw();}
+
+function snakeDraw(){const s=snakeState;
+  const canvas=document.getElementById('snakeC');if(!canvas)return;
+  const ctx=canvas.getContext('2d'),C=s.cell,W=s.cols*C,H=s.rows*C;
+  ctx.clearRect(0,0,W,H);
+  ctx.strokeStyle='rgba(255,255,255,.07)';
+  for(let x=0;x<=s.cols;x++){ctx.beginPath();ctx.moveTo(x*C,0);ctx.lineTo(x*C,H);ctx.stroke();}
+  for(let y=0;y<=s.rows;y++){ctx.beginPath();ctx.moveTo(0,y*C);ctx.lineTo(W,y*C);ctx.stroke();}
+  if(s.food){ctx.font=`${C+2}px serif`;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText('❓',s.food.x*C+C/2,s.food.y*C+C/2);}
+  s.body.forEach((b,i)=>{
+    ctx.fillStyle=i===0?'#52b788':'rgba(52,195,235,.85)';
+    ctx.beginPath();ctx.roundRect(b.x*C+1,b.y*C+1,C-2,C-2,4);ctx.fill();});
+  const el=document.getElementById('snakeLen');if(el)el.textContent=`長度: ${s.body.length}`;}
+
+function snakeAskQ(){const s=snakeState;
+  const q=newsQuizData[s.qIdx%newsQuizData.length];s.qIdx++;
+  let opts='';q.opts.forEach((o,oi)=>{
+    opts+=`<button class="qopt" onclick="snakeAns(${oi},${q.a},'${q.cat}','${q.exp.replace(/'/g,"\\'")}')">${o}</button>`;});
+  const el=document.getElementById('snakeQ');
+  if(el){el.classList.remove('hide');
+    el.innerHTML=`<div class="vqq">❓ ${q.q}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;">${opts}</div>
+    <div class="fb" id="snakeQFb"></div>`;}}
+
+function snakeAns(oi,correct,cat,exp){const s=snakeState;if(!s)return;
+  document.querySelectorAll('#snakeQ .qopt').forEach(b=>b.disabled=true);
+  const fb=document.getElementById('snakeQFb');
+  if(oi===correct){gain(cat);s.correct++;
+    if(fb)fb.innerHTML=`✅ 答對！(+10) <span style="font-size:12px">💡 ${exp}</span>`;
+    const tail=s.body[s.body.length-1];s.body.push({...tail});
+  }else{lose(cat);s.wrong++;
+    if(fb){fb.className='fb no';fb.textContent='❌ 答錯了！遊戲結束 💀';}
+    setTimeout(snakeGameOver,1200);return;}
+  setTimeout(()=>{const el=document.getElementById('snakeQ');if(el)el.classList.add('hide');
+    snakeSpawnFood();s.pause=false;
+    s.speed=Math.max(150,s.speed-20);// 越長越快
+    s.gameInt=setInterval(snakeTick,s.speed);snakeDraw();},1300);}
+
+function snakeGameOver(){const s=snakeState;if(!s||s.gameOver)return;
+  s.gameOver=true;clearInterval(s.gameInt);
+  if(s._keyHandler)document.removeEventListener('keydown',s._keyHandler);
+  const len=s.body.length,bonus=Math.min((len-3)*15,90);
+  state.points+=Math.max(0,bonus);updateScore();snakeDraw();
+  const el=document.getElementById('snakeEnd');
+  if(el)el.innerHTML=`<div class="reading-card" style="text-align:center;margin-top:10px;">
+    <div style="font-size:40px;">🐍</div>
+    <h3>遊戲結束！最終長度 <b style="color:var(--coral)">${len} 節</b></h3>
+    <p style="font-size:13px;color:#5a6b7b;">答對 ${s.correct} 題　答錯 ${s.wrong} 題　獲得 ${Math.max(0,bonus)} 分</p>
+    </div>
+    <div class="center"><button class="btn" onclick="goto(9)">進入最後一關 🌱 →</button></div>`;}
 
 function lvl4(){
   const acts=["🛒 買東西自備購物袋、不買過度包裝","🥤 自備水壺，少用一次性塑膠",
@@ -755,7 +870,8 @@ function replayGame(){if(flipTimer)clearInterval(flipTimer);
 const stages=[lvlReadQuiz,lvlOceanTower,lvlCoral,lvlRockTower,lvlLandform,lvl2,lvl3,lvlFlipCard,lvlNewsQuiz,lvl4];
 function goto(step){
   if(flipTimer&&step!==7)clearInterval(flipTimer);
-  if(ttState&&!ttState.gameOver){clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);ttState.gameOver=true;}
+  if(ttState&&!ttState.gameOver){clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);ttState.gameOver=true;window.removeEventListener('deviceorientation',turtleTiltHandler);}
+  if(snakeState&&!snakeState.gameOver){clearInterval(snakeState.gameInt);if(snakeState._keyHandler)document.removeEventListener('keydown',snakeState._keyHandler);snakeState.gameOver=true;}
   state.step=step;renderProgress();stages[step]();window.scrollTo({top:0,behavior:'smooth'});}
 
 function makeBubbles(){for(let i=0;i<14;i++){const b=document.createElement('div');b.className='bubble';
