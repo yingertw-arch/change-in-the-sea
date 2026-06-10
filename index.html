@@ -269,21 +269,46 @@ const readQuizData=[
    a:2,cat:"geology",exp:"自然地質變化需要百萬、千萬年；人類對海洋的破壞卻僅需幾十年。"},
 ];
 const newsQuizData=[
-  {q:"文章中提到的四個全球大事，依照發生時間從最早到最晚排列，正確的順序是？",
-   opts:["東加火山 → 公海條約 → 珊瑚大白化 → 南極海冰","珊瑚大白化 → 公海條約 → 東加火山 → 南極海冰","公海條約 → 東加火山 → 南極海冰 → 珊瑚大白化","南極海冰 → 珊瑚大白化 → 東加火山 → 公海條約"],
-   a:0,cat:"geology",exp:"東加火山（最早）→ 聯合國公海條約 → 全球珊瑚大白化 → 南極海冰新低（最近）。"},
-  {q:"微塑膠進入人類血液，最主要是透過什麼途徑？",
-   opts:["直接喝海水","吃了含有微塑膠的海鮮，透過食物鏈累積","在海邊游泳被皮膚吸收","塑膠袋分解成氣體吸入"],
-   a:1,cat:"pollution",exp:"微塑膠透過「食物鏈累積」：魚類吃入後，人類再吃魚，微塑膠就進入人體。"},
-  {q:"「海洋熱浪」和「珊瑚大白化」最主要的關係是？",
-   opts:["完全沒有關係","海洋熱浪讓海水升溫，直接導致珊瑚白化","珊瑚白化後才出現海洋熱浪","只有颱風才讓珊瑚白化"],
-   a:1,cat:"climate",exp:"海洋熱浪造成海水溫度異常升高，正是珊瑚白化的主要原因。"},
-  {q:"《公海條約》通過後，個人最能做什麼來支持它的目標？",
-   opts:["什麼都不用做，這是政府的事","減少塑膠使用、支持永續消費、傳播海洋保育觀念","只有科學家才能保護海洋","多搭飛機去看珊瑚礁"],
-   a:1,cat:"conservation",exp:"個人的日常行動（減塑、永續消費）直接影響海洋健康，是支持《公海條約》精神的最佳方式。"},
-  {q:"南極海冰消融，為什麼會讓全球海平面上升？",
-   opts:["海冰融化增加海洋水量，造成海平面上升","海冰融化讓海水變冷，海平面反而下降","海冰和海平面完全無關","只有北極冰融化才影響海平面"],
-   a:0,cat:"climate",exp:"陸地冰川（南極冰蓋）融化後，水流入海洋，才會使全球海平面上升。"},
+  {q:"2024 年的報導提到，極端降雨與洪水會將陸地的污染物沖入大海，可能導致海水出現哪種現象，讓生物難以生存？",
+   opts:["變甜","優養化","結冰","變透明"],a:1,cat:"pollution",exp:"優養化是指水中過多的營養鹽（如農藥、肥料）導致藻類大量繁殖，消耗水中氧氣，使魚類和水中生物難以生存。"},
+  {q:"2026 年報導指出，哪一個海峽發生貨輪遇襲事件，導致全球油價大漲？",
+   opts:["台灣海峽","馬六甲海峽","荷姆茲海峽","直布羅陀海峽"],a:2,cat:"pollution",exp:"荷姆茲海峽是石油運輸的重要通道，2026 年發生貨輪遇襲事件後，全球油價應聲大漲。"},
+  {q:"台北市延平國小的學生曾擔任「鱟（ㄏㄡˋ）寶寶」的保母，這種生物因為在地球上存在已久，被稱為什麼？",
+   opts:["外星生物","未來生物","活化石","深海巨獸"],a:2,cat:"conservation",exp:"鱟已經在地球上存在超過 4 億年，比恐龍還古老，因此被稱為「活化石」。"},
+  {q:"關於海膽的移動特性，下列哪一項描述是正確的？",
+   opts:["每天可以移動好幾公里","每天大約只移動十公分","所有的刺都是尖銳的","它們完全不會移動"],a:1,cat:"conservation",exp:"海膽移動非常緩慢，每天大約只移動十公分左右。"},
+  {q:"屏東小琉球的生態受到哪種垃圾的嚴重威脅，甚至發起大規模的撿拾比賽？",
+   opts:["廢棄汽車","煙蒂","舊報紙","燈泡"],a:1,cat:"pollution",exp:"小琉球受到煙蒂垃圾的嚴重威脅，當地發起撿菸蒂比賽來保護生態。"},
+  {q:"新北瑞芳知名的「象鼻岩」在 2023 年底斷裂，主因是什麼？",
+   opts:["地震","人為敲打","長期風化與海浪拍打","火山噴發"],a:2,cat:"geology",exp:"象鼻岩是長期受到風化與海浪拍打侵蝕，導致岩石結構弱化而斷裂。"},
+  {q:"象鼻岩斷裂後，有網友認為其形狀現在看起來像什麼動物？",
+   opts:["大象","水豚","鯨魚","海龜"],a:1,cat:"geology",exp:"象鼻岩斷裂後，網友發現它的形狀變得像一隻水豚，引發熱烈討論。"},
+  {q:"根據報紙報導，蘇格蘭鮭魚養殖業受到哪種生物入侵的威脅？",
+   opts:["大翅鯨","珍珠串水母","腔棘魚","鱟"],a:1,cat:"pollution",exp:"珍珠串水母大量入侵蘇格蘭鮭魚養殖場，造成養殖業者重大損失。"},
+  {q:"為什麼海水溫度上升會導致水母暴增？",
+   opts:["水母喜歡熱水","有利於水母提早開始繁殖","水母會吃掉冰塊","魚類都死光了"],a:1,cat:"climate",exp:"海水升溫有利於水母提早開始繁殖，導致水母數量暴增。"},
+  {q:"關於「魚類糞便」的生態重要性，下列敘述何者正確？",
+   opts:["只是單純的污染物","肉食性魚類的糞便通常較有營養價值","只有素食魚的糞便有用","魚類完全不吃別人的糞便"],a:1,cat:"conservation",exp:"肉食性魚類的糞便含有較高的營養成分，對海洋生態系的養分循環很重要。"},
+  {q:"2024 年 4 月的一篇報導指出，海上漏油事件對生態的傷害大約需要多久才能恢復生機？",
+   opts:["一個月","一年","十年也難恢復","只要一天"],a:2,cat:"pollution",exp:"海上漏油對生態的破壞非常持久，十年也很難恢復原有的生機。"},
+  {q:"被稱為「深海化石」的腔棘魚，其雌魚懷孕期長達幾年？",
+   opts:["5 個月","1 年","5 年","10 年"],a:2,cat:"conservation",exp:"腔棘魚的雌魚懷孕期長達 5 年，是已知動物中最長的懷孕期之一。"},
+  {q:"達悟族人觀測到哪種生物噴出的水氣，即預告了蘭嶼飛魚季的開始？",
+   opts:["海龜","大翅鯨","海豚","水母"],a:1,cat:"conservation",exp:"達悟族人觀察到大翅鯨噴出的水氣，就知道飛魚季即將到來。"},
+  {q:"印尼首都雅加達面臨嚴重的地層下陷，主要原因是？",
+   opts:["過度抽取地下水","建築物太重","太多遊客","頻繁地震"],a:0,cat:"climate",exp:"雅加達因過度抽取地下水，導致地層嚴重下陷，部分地區每年下沉可達 25 公分。"},
+  {q:"報紙提到哪一個地區的漁民，因為魚類減少而改行做塑膠垃圾回收？",
+   opts:["台灣淡水","埃及尼羅河","蘇格蘭","太平洋公海"],a:1,cat:"pollution",exp:"埃及尼羅河的漁民因為魚類資源減少，轉而從事塑膠垃圾回收工作。"},
+  {q:"2026 年的一篇報導提到，海洋中的「幽靈」（廢棄漁網）可以被回收製成什麼產品？",
+   opts:["皮包","太陽眼鏡","鞋子","帽子"],a:1,cat:"conservation",exp:"廢棄漁網（幽靈）可以回收再製成太陽眼鏡，賦予海洋垃圾新的價值。"},
+  {q:"2025 年科學家警告，哪一種現象正在改變極地生物的棲息地並影響食物網？",
+   opts:["海冰減少與海洋升溫","海水變冰冷","魚類變多","海底火山噴發"],a:0,cat:"climate",exp:"海冰減少與海洋升溫正在改變極地生物的棲息地，並影響整個食物網的平衡。"},
+  {q:"嘉義龍港國小的課程提到，寄居蟹因為環境污染與貝殼被撿走，被迫用什麼當作「家」？",
+   opts:["石頭","海草","塑膠垃圾或燈泡","魚骨頭"],a:2,cat:"pollution",exp:"寄居蟹找不到足夠的貝殼，只好被迫使用塑膠垃圾或燈泡當作棲身之所。"},
+  {q:"台灣的鯨豚傳統表演正轉型為什麼樣的形式，以維護動物福利？",
+   opts:["更多的高難度特技","生態解說與環境教育","馬戲團式表演","停止對外開放"],a:1,cat:"conservation",exp:"台灣的鯨豚表演正轉型為生態解說與環境教育，以維護動物福利。"},
+  {q:"2025 年 10 月的報導提到，沿海淡水資源惡化的原因除了全球暖化，還跟哪種現代設施大量消耗水資源有關？",
+   opts:["游泳池","遊樂園","雲端運算資料中心","飯店"],a:2,cat:"climate",exp:"雲端運算資料中心需要大量水資源進行散熱，加上全球暖化，導致沿海淡水資源惡化。"},
 ];
 
 let state={playerName:'',step:0,points:0,correct:0,wrong:0,sortIdx:0,cycleNext:0,
@@ -346,26 +371,35 @@ function textReading(){
     </div>
     <div class="center"><button class="btn" onclick="goto(0)">我讀完了，開始作答 →</button></div>`);}
 
-let rqDone=new Set();
-function lvlReadQuiz(){rqDone=new Set();let html='';
-  readQuizData.forEach((q,qi)=>{let opts='';
-    q.opts.forEach((o,oi)=>{opts+=`<button class="qopt" id="rq${qi}o${oi}" onclick="ansRQ(${qi},${oi})">${o}</button>`;});
-    html+=`<div style="margin-bottom:20px"><div class="vqq">${qi+1}. ${q.q}</div>
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${opts}</div>
-      <div class="fb" id="rqfb${qi}"></div></div>`;});
+let rqDone=new Set(),rqCurrent=0,rqShuffled=[];
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function lvlReadQuiz(){
+  rqDone=new Set();rqCurrent=0;
+  rqShuffled=readQuizData.map(q=>{const idx=q.opts.map((_,i)=>i);shuffle(idx);return{opts:idx.map(i=>q.opts[i]),correctIdx:idx.indexOf(q.a)};});
   show(`<span class="scene-tag">關卡 1 / 10 · 文本測驗</span>
     <h2>📝 讀文測驗</h2>
     <p class="sub">根據剛才閱讀的文章作答。答對 <b>+10</b>，答錯 <b>-5</b>。</p>
-    ${html}
-    <div class="center hide" id="rqNext">
-      <button class="btn" onclick="goto(1)">下一關：海洋抽抽樂 →</button></div>`);}
+    <div id="rqArea"></div>`);
+  renderRQ();}
+function renderRQ(){
+  if(rqCurrent>=readQuizData.length){
+    document.getElementById('rqArea').innerHTML=`<div class="center"><button class="btn" onclick="goto(1)">下一關：海洋抽抽樂 →</button></div>`;
+    return;}
+  const q=readQuizData[rqCurrent],s=rqShuffled[rqCurrent];let opts='';
+  s.opts.forEach((o,oi)=>{opts+=`<button class="qopt" id="rq${rqCurrent}o${oi}" onclick="ansRQ(${rqCurrent},${oi})">${o}</button>`;});
+  document.getElementById('rqArea').innerHTML=`<div class="vqq">${rqCurrent+1}. ${q.q}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${opts}</div>
+    <div class="fb" id="rqfb${rqCurrent}"></div>`;}
 function ansRQ(qi,oi){if(rqDone.has(qi))return;
-  const q=readQuizData[qi],fb=document.getElementById('rqfb'+qi),chosen=document.getElementById('rq'+qi+'o'+oi);
-  if(oi===q.a){rqDone.add(qi);chosen.classList.add('right');gain(q.cat);
-    q.opts.forEach((_,i)=>document.getElementById('rq'+qi+'o'+i).disabled=true);
-    fb.className='fb ok';fb.innerHTML=`✅ 答對！(+10) <span style="font-weight:normal;font-size:13px">💡 ${q.exp}</span>`;
-  }else{chosen.classList.add('wrong');chosen.disabled=true;lose(q.cat);fb.className='fb no';fb.textContent='❌ 再想想！(-5)';}
-  if(rqDone.size===readQuizData.length)document.getElementById('rqNext').classList.remove('hide');}
+  const q=readQuizData[qi],s=rqShuffled[qi],fb=document.getElementById('rqfb'+qi),chosen=document.getElementById('rq'+qi+'o'+oi);
+  if(oi===s.correctIdx){rqDone.add(qi);chosen.classList.add('right');gain(q.cat);
+    document.querySelectorAll('#rqArea button.qopt').forEach(b=>b.disabled=true);
+    fb.className='fb ok';fb.innerHTML=`✅ 答對！(+10) <span style="font-weight:normal;font-size:13px">💡 ${q.exp}</span><div class="center"><button class="btn blue" style="margin-top:8px" onclick="nextRQ()">下一題 →</button></div>`;
+  }else{chosen.classList.add('wrong');chosen.disabled=true;lose(q.cat);fb.className='fb no';
+    fb.innerHTML=`❌ 再想想！(-5) <button class="btn ghost" onclick="reshuffleRQ(${qi})" style="margin-left:6px">重新作答 ↻</button>`;}}
+function reshuffleRQ(qi){const idx=readQuizData[qi].opts.map((_,i)=>i);shuffle(idx);
+  rqShuffled[qi]={opts:idx.map(i=>readQuizData[qi].opts[i]),correctIdx:idx.indexOf(readQuizData[qi].a)};renderRQ();}
+function nextRQ(){rqCurrent++;renderRQ();}
 
 function lvlOceanTower(){state.ocean=6;
   const oTxt=['寄居蟹住塑膠','海龜誤食垃圾','洋流送垃圾','塑膠微粒','海鳥吞塑膠','漁網纏住魚'];
@@ -461,7 +495,7 @@ function pullRock(i){const b=document.getElementById('r'+i);if(b.classList.conta
   document.getElementById('rmeter').textContent=`已風化 ${m} 層（極慢，千萬年）`;
   if(state.rock<=0){
     const bi=document.getElementById('yehliuImg');
-    if(bi){bi.style.filter='none';bi.style.transform='none';bi.src='./img-yehliu-broken.jpg';}
+    if(bi){bi.style.filter='none';bi.style.transform='none';bi.style.maxHeight='400px';bi.style.objectFit='contain';bi.src='./img-yehliu-broken.jpg';}
     const bov=document.getElementById('yehliuOverlay');if(bov)bov.style.background='rgba(0,0,0,.15)';
     document.getElementById('rtResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 女王頭的改變是<b>大自然</b>造成的，速度<b>極慢</b>（千萬年），無法挽回——我們只能珍惜。</p>
     <div class="center"><button class="btn blue" onclick="goto(4)">下一關 →</button></div>`;}}
@@ -506,7 +540,7 @@ function lvl2(){
 
 function startTurtle(){
   if(ttState){clearInterval(ttState.timerInt);clearInterval(ttState.gameInt);}
-  ttState={x:50,moving:0,timeLeft:60,pts:0,speed:1.0,items:[],spawnCool:0,gameOver:false,timerInt:null,gameInt:null};
+  ttState={x:50,moving:0,timeLeft:40,pts:0,speed:1.0,items:[],spawnCool:0,gameOver:false,timerInt:null,gameInt:null};
   show(`<span class="scene-tag">關卡 6 / 10 · 互動遊戲</span><h2>🐢 海龜接海草</h2>
     <div id="tGame" style="position:relative;width:100%;height:320px;
       background:linear-gradient(180deg,#4dc9ed 0%,#168aad 60%,#0a3d62 100%);
@@ -515,7 +549,7 @@ function startTurtle(){
         transform:translateX(-50%);font-size:46px;user-select:none;line-height:1;">🐢</div>
       <div style="position:absolute;top:10px;left:12px;">
         <span id="tTimer" style="background:rgba(0,0,0,.45);color:#fff;font-weight:bold;
-          font-size:15px;padding:4px 12px;border-radius:20px;">⏱ 60s</span></div>
+          font-size:15px;padding:4px 12px;border-radius:20px;">⏱ 40s</span></div>
       <div style="position:absolute;top:10px;right:12px;">
         <span id="tPts" style="background:rgba(0,0,0,.45);color:#fff;font-weight:bold;
           font-size:15px;padding:4px 12px;border-radius:20px;">0 分</span></div>
@@ -667,22 +701,15 @@ let snakeState=null;
 function lvlNewsQuiz(){
   if(snakeState){clearInterval(snakeState.gameInt);if(snakeState._keyHandler)document.removeEventListener('keydown',snakeState._keyHandler);snakeState=null;}
   show(`<span class="scene-tag">關卡 9 / 10 · 知識海蛇</span><h2>🐍 知識海蛇</h2>
-    <p class="sub">先看完新聞文本，再開始遊戲！</p>
-    <div class="reading-card">
-      <h3>🗞️ 海洋大事紀</h3>
-      <p>2022年，<span class="hl">東加海底火山</span>爆發，引發海嘯，地球內部力量依然活躍。</p><br>
-      <p>2023年，聯合國通過<span class="hl">《公海條約》</span>，保護公海生態，是保育史重大突破。</p><br>
-      <p>2024年，全球<span class="hl">第四次珊瑚礁大白化</span>，<span class="hl">海洋熱浪</span>讓海水升溫是主因。</p><br>
-      <p>2025年，南極海冰創新低，<span class="hl">陸地冰川</span>融化讓海平面上升；人類血液驗出<span class="hl">微塑膠</span>，透過食物鏈進入人體。</p>
-    </div>
+    <p class="sub">用方向鍵或滑動螢幕操作海蛇，回答海洋時事題！</p>
     <div class="reading-card" style="margin-top:10px;">
       <b>🎮 遊戲規則</b><br><br>
       🐍 海蛇自動移動，用方向鍵或滑動螢幕控制<br>
       ❓ 碰到食物 → 題目出現，遊戲暫停<br>
-      🟢 答對 → 海蛇增加一節（越長越好！）<br>
-      🔴 答錯 → 遊戲立刻結束 💀<br>
+      🟢 答對 → 海蛇增加一節（越長越好！），+10 分<br>
+      🔴 答錯 → 遊戲結束 💀<br>
       💀 蛇頭碰到自己的身體 → 遊戲結束<br>
-      🏆 最終蛇的長度決定這關得分
+      🏆 總共 20 題隨機出現，全部用完會重新打亂再出題！
     </div>
     <div class="center"><button class="btn blue" onclick="startSnake()">開始遊戲 🐍</button></div>`);}
 
@@ -693,7 +720,7 @@ function startSnake(){
     body:[{x:9,y:6},{x:8,y:6},{x:7,y:6}],
     dir:{x:1,y:0},nextDir:{x:1,y:0},
     food:null,pause:false,gameOver:false,gameInt:null,
-    speed:300,qPool:[...newsQuizData].sort(()=>Math.random()-.5),qIdx:0,
+    speed:300,qPool:[...Array(newsQuizData.length).keys()].sort(()=>Math.random()-.5),qIdx:0,
     correct:0,wrong:0,touchStart:null,_keyHandler:null};
   snakeSpawnFood();
   const W=COLS*CELL,H=ROWS*CELL;
@@ -762,10 +789,12 @@ function snakeDraw(){const s=snakeState;
   const el=document.getElementById('snakeLen');if(el)el.textContent=`長度: ${s.body.length}`;}
 
 function snakeAskQ(){const s=snakeState;
-  const q=newsQuizData[s.qIdx%newsQuizData.length];s.qIdx++;
-  let opts='';q.opts.forEach((o,oi)=>{
+  if(s.qIdx>=s.qPool.length){s.qPool=[...Array(newsQuizData.length).keys()].sort(()=>Math.random()-.5);s.qIdx=0;}
+  const qi=s.qPool[s.qIdx++],q=newsQuizData[qi];
+  const idx=q.opts.map((_,i)=>i).sort(()=>Math.random()-.5),correct=idx.indexOf(q.a);
+  let opts='';idx.forEach((i,oi)=>{
     const expSafe=q.exp.replace(/'/g,'&#39;').replace(/"/g,'&quot;');
-    opts+=`<button class="qopt" onclick="snakeAns(${oi},${q.a},'${q.cat}','${expSafe}')">${o}</button>`;});
+    opts+=`<button class="qopt" onclick="snakeAns(${oi},${correct},'${q.cat}','${expSafe}')">${q.opts[i]}</button>`;});
   const el=document.getElementById('snakeQ');
   if(el){el.classList.remove('hide');
     el.innerHTML=`<div class="vqq">❓ ${q.q}</div>
@@ -776,15 +805,15 @@ function snakeAns(oi,correct,cat,exp){const s=snakeState;if(!s)return;
   document.querySelectorAll('#snakeQ .qopt').forEach(b=>b.disabled=true);
   const fb=document.getElementById('snakeQFb');
   if(oi===correct){gain(cat);s.correct++;
-    if(fb)fb.innerHTML=`✅ 答對！(+10) <span style="font-size:12px">💡 ${exp}</span>`;
+    fb.className='fb ok';fb.innerHTML=`✅ 答對！(+10) <span style="font-size:12px">💡 ${exp}</span>`;
     const tail=s.body[s.body.length-1];s.body.push({...tail});
+    setTimeout(()=>{const el=document.getElementById('snakeQ');if(el)el.classList.add('hide');
+      snakeSpawnFood();s.pause=false;
+      s.speed=Math.max(150,s.speed-20);
+      s.gameInt=setInterval(snakeTick,s.speed);snakeDraw();},1300);
   }else{lose(cat);s.wrong++;
-    if(fb){fb.className='fb no';fb.textContent='❌ 答錯了！遊戲結束 💀';}
-    setTimeout(snakeGameOver,1200);return;}
-  setTimeout(()=>{const el=document.getElementById('snakeQ');if(el)el.classList.add('hide');
-    snakeSpawnFood();s.pause=false;
-    s.speed=Math.max(150,s.speed-20);// 越長越快
-    s.gameInt=setInterval(snakeTick,s.speed);snakeDraw();},1300);}
+    fb.className='fb no';fb.textContent='❌ 答錯了！遊戲結束 💀';
+    setTimeout(snakeGameOver,1200);}}
 
 function snakeGameOver(){const s=snakeState;if(!s||s.gameOver)return;
   s.gameOver=true;clearInterval(s.gameInt);
