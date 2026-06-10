@@ -232,9 +232,9 @@ const readQuizData=[
    a:2,cat:"geology",exp:"自然地質變化需要百萬、千萬年；人類對海洋的破壞卻僅需幾十年。"},
 ];
 const newsQuizData=[
-  {q:"以下事件，哪一個發生得最早？",
-   opts:["全球第四次珊瑚礁大白化（2024）","東加海底火山爆發（2022）","聯合國通過《公海條約》（2023）","南極海冰面積創新低（2025）"],
-   a:1,cat:"geology",exp:"東加火山爆發於2022年，是這份大事紀中最早發生的事件。"},
+  {q:"文章中提到的四個全球大事，依照發生時間從最早到最晚排列，正確的順序是？",
+   opts:["東加火山 → 公海條約 → 珊瑚大白化 → 南極海冰","珊瑚大白化 → 公海條約 → 東加火山 → 南極海冰","公海條約 → 東加火山 → 南極海冰 → 珊瑚大白化","南極海冰 → 珊瑚大白化 → 東加火山 → 公海條約"],
+   a:0,cat:"geology",exp:"東加火山（最早）→ 聯合國公海條約 → 全球珊瑚大白化 → 南極海冰新低（最近）。"},
   {q:"微塑膠進入人類血液，最主要是透過什麼途徑？",
    opts:["直接喝海水","吃了含有微塑膠的海鮮，透過食物鏈累積","在海邊游泳被皮膚吸收","塑膠袋分解成氣體吸入"],
    a:1,cat:"pollution",exp:"微塑膠透過「食物鏈累積」：魚類吃入後，人類再吃魚，微塑膠就進入人體。"},
@@ -341,9 +341,9 @@ function lvlOceanTower(){state.ocean=6;
       <div id="oceanOverlay" style="position:absolute;inset:0;display:flex;flex-direction:column;
         align-items:center;justify-content:center;gap:4px;background:rgba(0,0,0,0);
         transition:background .7s;border-radius:14px;">
-        <span id="oceanEmoji" style="font-size:30px;text-shadow:0 2px 8px rgba(0,0,0,.7);">🐠🐠🐠</span>
+        <span id="oceanEmoji" style="font-size:30px;text-shadow:0 2px 8px rgba(0,0,0,.7);opacity:0;transition:opacity .5s;"></span>
         <span id="oceanLabel" style="font-size:13px;font-weight:bold;color:#fff;
-          background:rgba(0,0,0,.4);padding:3px 12px;border-radius:20px;">生機勃勃</span>
+          background:rgba(0,0,0,.4);padding:3px 12px;border-radius:20px;opacity:0;transition:opacity .5s;"></span>
       </div>
     </div>
     <div class="towers"><div class="tower onecol">
@@ -359,8 +359,8 @@ function pullOcean(i){const b=document.getElementById('o'+i);if(b.classList.cont
   const darken=[0,.1,.22,.37,.52,.68];
   const img=document.getElementById('oceanImg');if(img)img.style.filter=filters[si];
   const ov=document.getElementById('oceanOverlay');if(ov)ov.style.background=`rgba(20,8,0,${darken[si]})`;
-  const emo=document.getElementById('oceanEmoji');if(emo)emo.textContent=emojis[si];
-  const lbl=document.getElementById('oceanLabel');if(lbl)lbl.textContent=labels[si];
+  const emo=document.getElementById('oceanEmoji');if(emo){emo.textContent=emojis[si];emo.style.opacity='1';}
+  const lbl=document.getElementById('oceanLabel');if(lbl){lbl.textContent=labels[si];lbl.style.opacity='1';}
   document.getElementById('ometer').textContent=`已破壞 ${6-left} 層（超快，數十年）`;
   if(state.ocean<=0){
     document.getElementById('otResult').innerHTML=`<p class="sub" style="margin-top:12px">💡 海洋的崩壞是<b>人類</b>造成的，速度<b>超快</b>（幾十年）——但我們<b>可以阻止它！</b></p>
@@ -527,14 +527,25 @@ function flipClick(ci){if(flipLocked)return;
     setTimeout(()=>{c1.classList.remove('flipped');card.classList.remove('flipped');flipFirst=null;flipLocked=false;},1000);}}
 
 let nqDone=new Set();
-function lvlNewsQuiz(){nqDone=new Set();let html='';
+function lvlNewsQuiz(){
+  show(`<span class="scene-tag">關卡 9 / 10 · 深度思考</span><h2>🌐 全球新聞大考驗</h2>
+    <p class="sub">先複習一次新聞文本，再來作答！</p>
+    <div class="reading-card">
+      <h3>🗞️ 海洋大事紀</h3>
+      <p>2022年，<span class="hl">東加海底火山</span>爆發，引發海嘯，提醒我們地球內部的力量依然活躍。</p><br>
+      <p>2023年，聯合國通過<span class="hl">《公海條約》</span>，保護不屬於任何國家的公海生態系統，是人類保育史上的重大突破。</p><br>
+      <p>2024年，全球發生<span class="hl">第四次珊瑚礁大白化</span>。科學家指出，<span class="hl">海洋熱浪</span>造成海水溫度異常升高，是珊瑚白化的主因。</p><br>
+      <p>2025年，南極海冰面積創新低，<span class="hl">陸地冰川</span>融化後流入海洋，使全球海平面上升威脅加劇。與此同時，科學家在人類血液中發現<span class="hl">微塑膠</span>，主要來源是透過食物鏈——魚類吃入後，人類再吃魚。</p>
+    </div>
+    <div class="center"><button class="btn blue" onclick="showNQ()">我讀完了，開始作答 →</button></div>`);}
+function showNQ(){nqDone=new Set();let html='';
   newsQuizData.forEach((q,qi)=>{let opts='';
     q.opts.forEach((o,oi)=>{opts+=`<button class="qopt" id="nq${qi}o${oi}" onclick="ansNQ(${qi},${oi})">${o}</button>`;});
     html+=`<div style="margin-bottom:22px"><div class="vqq">${qi+1}. ${q.q}</div>
       <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">${opts}</div>
       <div class="fb" id="nqfb${qi}"></div></div>`;});
-  show(`<span class="scene-tag">關卡 9 / 10 · 深度思考</span><h2>🧠 海洋大事深度題</h2>
-    <p class="sub">不只考記憶——要<b>分析</b>和<b>應用</b>你學到的知識！答對 +10，答錯 -5。</p>
+  show(`<span class="scene-tag">關卡 9 / 10 · 深度思考</span><h2>📝 新聞分析測驗</h2>
+    <p class="sub">根據剛才的文本分析作答。答對 <b>+10</b>，答錯 <b>-5</b>。</p>
     ${html}
     <div class="center hide" id="nqNext"><button class="btn" onclick="goto(9)">進入最後一關 🌱 →</button></div>`);}
 function ansNQ(qi,oi){if(nqDone.has(qi))return;
